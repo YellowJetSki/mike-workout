@@ -223,16 +223,26 @@ li {
   align-items: center;
   border-bottom: 1px solid #222a39;
   padding: 1rem 0;
+  margin-bottom: 0.15rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
   gap: 0.8rem;
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
+li:hover,
+li:focus-within {
+  background-color: #222a39aa;
+}
+
 li strong {
   flex: 1 1 100%;
   margin-bottom: 0.4rem;
   color: var(--primary);
+  line-height: 1.4;
+  letter-spacing: 0.012em;
 }
 
 /* Checkbox */
@@ -244,13 +254,15 @@ label {
   flex: 0 0 auto;
   font-weight: 500;
   color: var(--text-secondary);
+  line-height: 1.4;
+  letter-spacing: 0.012em;
 }
 
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: 2px solid var(--text-secondary);
   border-radius: 6px;
   background-color: transparent;
@@ -277,7 +289,7 @@ input[type="checkbox"]:checked::after {
 }
 
 input[type="checkbox"]:focus-visible {
-  outline: 2px solid var(--primary-light);
+  outline: 3px solid var(--primary-light);
   outline-offset: 2px;
 }
 
@@ -292,12 +304,12 @@ textarea {
   font-family: var(--font);
   font-weight: 400;
   font-size: 1rem;
-  padding: 0.85rem 1rem;
-  border: 1.5px solid #313846;
-  border-radius: 10px;
-  transition: border-color 0.3s ease;
+  padding: 1rem 1.2rem;
+  border: 1px solid #313846;
+  border-radius: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   resize: vertical;
-  min-height: 48px;
+  min-height: 56px;
   color: var(--text-primary);
   background-color: #1b222c;
 }
@@ -306,6 +318,11 @@ textarea::placeholder {
   color: var(--text-secondary);
   opacity: 0.7;
   font-style: italic;
+  transition: opacity 0.3s ease;
+}
+
+textarea:focus::placeholder {
+  opacity: 0.42;
 }
 
 textarea:focus {
@@ -334,6 +351,7 @@ textarea:focus {
   transition: background-color 0.25s ease, box-shadow 0.25s ease;
   user-select: none;
   z-index: 11;
+  animation: none;
 }
 
 #resetTrackingBtn:hover,
@@ -341,6 +359,12 @@ textarea:focus {
   background-color: var(--primary-dark);
   box-shadow: 0 4px 16px rgba(58, 84, 182, 0.95);
   outline: none;
+  animation: pulseGlow 1.2s ease infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(58, 84, 182, 0.6); }
+  50% { box-shadow: 0 6px 16px rgba(58, 84, 182, 0.85); }
 }
 
 /* Rest Timer */
@@ -376,7 +400,7 @@ textarea:focus {
   padding: 0.6rem 1.5rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   user-select: none;
   margin-left: 0.5rem;
 }
@@ -388,6 +412,7 @@ textarea:focus {
 
 #timerControls button:hover:not(:disabled),
 #timerControls button:focus-visible:not(:disabled) {
+  box-shadow: 0 2px 6px rgba(92, 158, 248, 0.5);
   background-color: var(--primary-dark);
   outline: none;
 }
@@ -402,10 +427,17 @@ textarea:focus {
   align-items: center;
   z-index: 1000;
   padding: 1rem;
+  backdrop-filter: blur(6px) saturate(1.2);
+  -webkit-backdrop-filter: blur(6px) saturate(1.2);
 }
 
 #workoutSummaryModal[aria-hidden="false"] {
   display: flex;
+  animation: modalFadeInScale 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#workoutSummaryModal[aria-hidden="true"] {
+  display: none;
 }
 
 #workoutSummaryContent {
@@ -417,6 +449,7 @@ textarea:focus {
   box-shadow: 0 0 20px #5c9ef8aa;
   color: var(--text-primary);
   text-align: center;
+  outline: none;
 }
 
 #workoutSummaryContent h2 {
@@ -455,6 +488,11 @@ textarea:focus {
 #workoutSummaryContent button:focus-visible {
   background-color: var(--primary-dark);
   outline: none;
+}
+
+@keyframes modalFadeInScale {
+  0% {opacity: 0; transform: scale(0.96);}
+  100% {opacity: 1; transform: scale(1);}
 }
 
 @media (max-width: 480px) {
