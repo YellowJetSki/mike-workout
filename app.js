@@ -15,34 +15,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Get Ottawa current day (0=Sunday, 1=Monday, ..., 6=Saturday)
   function getOttawaDayIndex() {
-    // Ottawa timezone offset is -4 or -5 depending on DST, use Intl API for accuracy
     try {
       const ottawaDate = new Date().toLocaleString("en-CA", { timeZone: "America/Toronto" });
       const date = new Date(ottawaDate);
       return date.getDay();
     } catch {
-      return new Date().getDay(); // fallback local
+      return new Date().getDay();
     }
   }
 
-  // Map JavaScript day index to tab id
+  // Map JS day index to tab id
   const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
   function activateTab(day) {
-    tabs.forEach((tab) => {
+    tabs.forEach(tab => {
       const selected = tab.id === `tab-${day}`;
       tab.setAttribute("aria-selected", selected);
       tab.tabIndex = selected ? 0 : -1;
     });
-
-    panels.forEach((panel) => {
+    panels.forEach(panel => {
       panel.hidden = panel.id !== `panel-${day}`;
     });
   }
 
-  // Load saved checkbox states from localStorage
+  // Load checkbox states from localStorage
   function loadTrackingState() {
-    panels.forEach((panel) => {
+    panels.forEach(panel => {
       const day = panel.id.replace("panel-", "");
       const saved = localStorage.getItem(`tracking-${day}`);
       if (saved) {
@@ -61,20 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const panel = document.getElementById(`panel-${day}`);
     if (!panel) return;
     const states = [];
-    panel.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+    panel.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
       states.push(checkbox.checked);
     });
     localStorage.setItem(`tracking-${day}`, JSON.stringify(states));
   }
 
-  // Event listener for tab clicks
-  tabs.forEach((tab) => {
+  // Tab click and keyboard navigation
+  tabs.forEach(tab => {
     tab.addEventListener("click", () => {
       const day = tab.id.replace("tab-", "");
       activateTab(day);
     });
-    tab.addEventListener("keydown", (e) => {
-      // Support arrow keys for accessibility
+    tab.addEventListener("keydown", e => {
       let index = Array.from(tabs).indexOf(document.activeElement);
       if (e.key === "ArrowRight") {
         index = (index + 1) % tabs.length;
@@ -89,9 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Listen for changes to checkboxes to save state
-  panels.forEach((panel) => {
-    panel.addEventListener("change", (e) => {
+  // Save checkbox state on change
+  panels.forEach(panel => {
+    panel.addEventListener("change", e => {
       if (e.target && e.target.type === "checkbox") {
         const day = panel.id.replace("panel-", "");
         saveTrackingState(day);
@@ -99,10 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Reset tracking clears all saved states and unchecks all boxes
+  // Reset tracking clears checkboxes and localStorage
   resetTrackingBtn.addEventListener("click", () => {
-    panels.forEach((panel) => {
-      panel.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+    panels.forEach(panel => {
+      panel.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.checked = false;
       });
       const day = panel.id.replace("panel-", "");
@@ -144,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startStopBtn.addEventListener("click", startStopwatch);
   resetBtn.addEventListener("click", resetStopwatch);
 
-  // Initialization
+  // Initialize
   const currentDay = dayMap[getOttawaDayIndex()];
   activateTab(currentDay);
   loadTrackingState();

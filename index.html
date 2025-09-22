@@ -5,31 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Muscle Growth Workout Tracker</title>
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 <body>
-  <!-- Stopwatch -->
-  <div id="stopwatch">
-      <h2>Stopwatch</h2>
-      <div id="timer">00:00:00</div>
-      <button id="startStopBtn">Start</button>
-      <button id="resetBtn">Reset</button>
-  </div>
+  <div id="header-wrapper">
+    <!-- Stopwatch -->
+    <div id="stopwatch">
+        <h2>Stopwatch</h2>
+        <div id="timer">00:00:00</div>
+        <button id="startStopBtn">Start</button>
+        <button id="resetBtn">Reset</button>
+    </div>
 
-  <!-- Tabs for Days -->
-  <nav role="tablist" aria-label="Workout Days" id="dayTabs">
-      <button role="tab" id="tab-monday" aria-selected="true" aria-controls="panel-monday" tabindex="0">Monday</button>
-      <button role="tab" id="tab-tuesday" aria-selected="false" aria-controls="panel-tuesday" tabindex="-1">Tuesday</button>
-      <button role="tab" id="tab-wednesday" aria-selected="false" aria-controls="panel-wednesday" tabindex="-1">Wednesday</button>
-      <button role="tab" id="tab-thursday" aria-selected="false" aria-controls="panel-thursday" tabindex="-1">Thursday</button>
-      <button role="tab" id="tab-friday" aria-selected="false" aria-controls="panel-friday" tabindex="-1">Friday</button>
-      <button role="tab" id="tab-saturday" aria-selected="false" aria-controls="panel-saturday" tabindex="-1">Saturday</button>
-      <button role="tab" id="tab-sunday" aria-selected="false" aria-controls="panel-sunday" tabindex="-1">Sunday</button>
-  </nav>
+    <!-- Tabs for Days -->
+    <nav role="tablist" aria-label="Workout Days" id="dayTabs">
+        <button role="tab" id="tab-monday" aria-selected="true" aria-controls="panel-monday" tabindex="0">Monday</button>
+        <button role="tab" id="tab-tuesday" aria-selected="false" aria-controls="panel-tuesday" tabindex="-1">Tuesday</button>
+        <button role="tab" id="tab-wednesday" aria-selected="false" aria-controls="panel-wednesday" tabindex="-1">Wednesday</button>
+        <button role="tab" id="tab-thursday" aria-selected="false" aria-controls="panel-thursday" tabindex="-1">Thursday</button>
+        <button role="tab" id="tab-friday" aria-selected="false" aria-controls="panel-friday" tabindex="-1">Friday</button>
+        <button role="tab" id="tab-saturday" aria-selected="false" aria-controls="panel-saturday" tabindex="-1">Saturday</button>
+        <button role="tab" id="tab-sunday" aria-selected="false" aria-controls="panel-sunday" tabindex="-1">Sunday</button>
+    </nav>
+  </div>
 
   <!-- Tab Panels for Workouts -->
   <main>
-      <!-- Reset tracking button -->
-      <button id="resetTrackingBtn" aria-label="Reset workout tracking">Reset Tracking</button>
+      <!-- Reset tracking floating action button -->
+      <button id="resetTrackingBtn" aria-label="Reset workout tracking" title="Reset Workout Tracking">
+        <span class="material-icons" aria-hidden="true">autorenew</span>
+      </button>
 
       <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday">
           <ul>
@@ -255,7 +261,7 @@
           </ul>
       </section>
   </main>
-  
+
   <script src="app.js"></script>
 </body>
 </html>
