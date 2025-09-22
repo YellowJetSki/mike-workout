@@ -248,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     panels.forEach(panel => {
       const day = panel.id.replace("panel-","");
-      const exerciseTitles = Array.from(panel.querySelectorAll('li'));
       const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
       let dayCompletedSets = 0;
       let dayTotalSets = checkboxes.length;
@@ -258,20 +257,18 @@ document.addEventListener("DOMContentLoaded", () => {
       totalSets += dayTotalSets;
       completedSets += dayCompletedSets;
 
-      if(dayCompletedSets === 0) return; // don't add if no sets done for day
+      if(dayCompletedSets === 0) return;
 
       let daySummary = document.createElement('li');
       daySummary.innerHTML = `<strong>${day.charAt(0).toUpperCase()+day.slice(1)}</strong>: ${dayCompletedSets} of ${dayTotalSets} sets completed`;
       list.appendChild(daySummary);
     });
 
-    // Add total summary
     let totalSummary = document.createElement('li');
     totalSummary.innerHTML = `<strong>Total Sets:</strong> ${completedSets} of ${totalSets} completed`;
     list.appendChild(totalSummary);
 
-    // Add total workout time from stopwatch
-    const timeSummary = document.createElement('li');
+    let timeSummary = document.createElement('li');
     timeSummary.innerHTML = `<strong>Total Workout Time:</strong> ${formatTime(elapsedSeconds)}`;
     list.appendChild(timeSummary);
 
@@ -292,6 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInterval(stopwatchInterval);
       running = false;
       startStopBtn.textContent = "Start";
+      startStopBtn.setAttribute("aria-pressed", "false");
     } else {
       stopwatchInterval = setInterval(() => {
         elapsedSeconds++;
@@ -299,6 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 1000);
       running = true;
       startStopBtn.textContent = "Stop";
+      startStopBtn.setAttribute("aria-pressed", "true");
     }
   }
 
@@ -308,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
     timerDisplay.textContent = formatTime(elapsedSeconds);
     running = false;
     startStopBtn.textContent = "Start";
+    startStopBtn.setAttribute("aria-pressed", "false");
   }
 
   // Add workout summary button near stopwatch
@@ -316,14 +316,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.id = 'showSummaryBtn';
     btn.textContent = 'Show Summary';
     btn.style.marginTop = '0.6rem';
-    btn.style.backgroundColor = 'var(--mdc-theme-primary)';
-    btn.style.color = 'var(--mdc-theme-on-primary)';
+    btn.style.backgroundColor = 'var(--primary-color)';
+    btn.style.color = 'var(--background-color)';
     btn.style.border = 'none';
     btn.style.padding = '0.4rem 1rem';
     btn.style.borderRadius = '24px';
     btn.style.cursor = 'pointer';
-    btn.style.fontWeight = '600';
-    
+    btn.style.fontWeight = '700';
+
     btn.addEventListener('click', () => {
       showWorkoutSummary();
     });

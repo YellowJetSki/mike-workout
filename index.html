@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Muscle Growth Workout Tracker</title>
+  <title>Muscle Growth Workout Tracker - Dark Mode</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
@@ -11,11 +11,13 @@
 <body>
   <div id="header-wrapper">
     <!-- Stopwatch -->
-    <div id="stopwatch">
-        <h2>Stopwatch</h2>
-        <div id="timer">00:00:00</div>
-        <button id="startStopBtn">Start</button>
-        <button id="resetBtn">Reset</button>
+    <div id="stopwatch" role="region" aria-label="Stopwatch timer controls">
+      <h2>Stopwatch</h2>
+      <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
+      <div>
+        <button id="startStopBtn" aria-pressed="false" aria-label="Start or stop stopwatch timer">Start</button>
+        <button id="resetBtn" aria-label="Reset stopwatch timer">Reset</button>
+      </div>
     </div>
 
     <!-- Tabs for Days -->
