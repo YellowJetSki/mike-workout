@@ -1,430 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Muscle Growth Workout Tracker with Progress Log</title>
-<link rel="stylesheet" href="styles.css" />
-<script>
-var stopwatchInterval;
-var elapsedTime = 0;
-var running = false;
-function formatTime(ms) {
-    var totalSeconds = Math.floor(ms / 1000);
-    var minutes = Math.floor(totalSeconds / 60);
-    var seconds = totalSeconds % 60;
-    return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
-}
-function updateStopwatch() {
-    elapsedTime += 1000;
-    document.getElementById('stopwatch-time').innerText = formatTime(elapsedTime);
-}
-function startStopwatch() {
-    if (!running) {
-        running = true;
-        stopwatchInterval = setInterval(updateStopwatch, 1000);
-    }
-}
-function stopStopwatch() {
-    if (running) {
-        running = false;
-        clearInterval(stopwatchInterval);
-    }
-}
-function resetStopwatch() {
-    stopStopwatch();
-    elapsedTime = 0;
-    document.getElementById('stopwatch-time').innerText = formatTime(elapsedTime);
-}
-function openTab(tabName) {
-  var i;
-  var x = document.getElementsByClassName('tab-content');
-  var btns = document.getElementsByClassName('tab-btn');
-  for (i = 0; i < x.length; i++) { x[i].classList.remove('active'); }
-  for (i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
-  document.getElementById(tabName).classList.add('active');
-  document.getElementById(tabName + '-btn').classList.add('active');
-}
-function resetCheckboxes(day) {
-    var checkBoxes = document.querySelectorAll('.' + day + '-cb');
-    for (var i = 0; i < checkBoxes.length; i++) {
-        checkBoxes[i].checked = false;
-    }
-}
-function toggleDescription(element) {
-  if(element.classList.contains('expanded')) {
-    element.classList.remove('expanded');
-  } else {
-    element.classList.add('expanded');
-  }
-}
-function saveProgress(day, exercise) {
-  var weight = document.getElementById(day + '_' + exercise + '_weight').value;
-  var notes = document.getElementById(day + '_' + exercise + '_notes').value;
-  var key = day + '_' + exercise + '_progress';
-  var data = {weight: weight, notes: notes};
-  localStorage.setItem(key, JSON.stringify(data));
-  alert('Progress saved for ' + exercise + ' on ' + day);
-}
-function loadProgress() {
-  var workouts = {
-    "Monday": [["KB Military Press", 4], ["KB Floor Press", 4], ["KB Triceps Extensions", 3], ["Tricep Pulldown (Cable)", 3], ["Kettlebell Single-Arm Push Press", 3], ["Push-Ups", 3]],
-    "Tuesday": [["KB Front Squat", 4], ["KB Goblet Split Squat", 3], ["KB Deadlift", 4], ["KB Farmers Carry", 3], ["Plank on KB", 3]],
-    "Wednesday": [["Lat Pulldown", 4], ["Machine/KB Row", 4], ["KB Suitcase Deadlift", 3], ["Face Pull (Pulley)", 3], ["Biceps Curl", 3]],
-    "Thursday": [["KB Swings (EMOM)", 5], ["Double KB Clean & Press", 3], ["KB Reverse Lunge to Clean", 3], ["Turkish Get-Up", 3], ["KB Carry/Walk", 3]],
-    "Friday": [["Rest/Light Mobility", 1]],
-    "Saturday": [["Bodyweight Mobility Drills", 3], ["Yoga/Stretching", 1], ["Light KB Complex", 3]],
-    "Sunday": [["KB Bulgarian Split Squat", 4], ["Leg Curls/Press", 4], ["KB Sumo Deadlift", 4], ["Hanging Knee Raise", 3], ["Optional: Push-Ups/Ropes", 3]]
-  };
-  for (const day in workouts) {
-    let exercises = workouts[day];
-    for (let i=0; i<exercises.length; i++) {
-      let exercise = exercises[i][0].replace(/\W+/g, '_');
-      let key = day + '_' + exercise + '_progress';
-      let val = localStorage.getItem(key);
-      if (val) {
-        let data = JSON.parse(val);
-        let weightId = day + '_' + exercise + '_weight';
-        let notesId = day + '_' + exercise + '_notes';
-        if(document.getElementById(weightId)) document.getElementById(weightId).value = data.weight;
-        if(document.getElementById(notesId)) document.getElementById(notesId).value = data.notes;
-      }
-    }
-  }
-}
-window.onload = function() {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const today = days[new Date().getDay()];
-  if(document.getElementById(today + '-btn')) {
-    openTab(today);
-  } else {
-    openTab('Monday');
-  }
-  loadProgress();
-};
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Muscle Growth Workout Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="container">
-<h1>Weekly Kettlebell & Pulley Muscle Growth Program - Tracking & Progress Log</h1>
-<p><em>4-Week, Evidence-Based Plan</em></p>
-<div class="stopwatch-container">
-  <span id="stopwatch-time" class="stopwatch-time">00:00</span>
-  <button class="stopwatch-btn" onclick="startStopwatch()">Start</button>
-  <button class="stopwatch-btn" onclick="stopStopwatch()">Stop</button>
-  <button class="stopwatch-btn" onclick="resetStopwatch()">Reset</button>
-</div>
-<h2>Weekly Split</h2>
-<ul>
-  <li>Monday: Upper Body Push</li>
-  <li>Tuesday: Lower Body + Core</li>
-  <li>Wednesday: Upper Body Pull</li>
-  <li>Thursday: Full Body/Conditioning (AM)</li>
-  <li>Friday: Rest/Mobility</li>
-  <li>Saturday: Optional Active Recovery / Light Work</li>
-  <li>Sunday: Lower Body + Accessories</li>
-</ul>
-<h2>Instructions</h2>
-<ul>
-  <li>Perform a dynamic warmup and cool-down each session.</li>
-  <li>Progress weight/reps weekly if possible.</li>
-  <li>Superset exercises for maximal efficiency during lunch workouts.</li>
-  <li>Rest 60-90 seconds between sets.</li>
-</ul>
-<h2>Notes</h2>
-<ul>
-  <li>Swap exercises as needed based on equipment condition.</li>
-  <li>Prioritize compound lifts, especially if short on time.</li>
-  <li>Adjust for individual energy and recovery needs each week.</li>
-</ul>
-</div>
-<div class="container">
-  <div class="tabs">
-    <button class="tab-btn" id="Monday-btn" onclick="openTab('Monday')">Monday</button>
-    <button class="tab-btn" id="Tuesday-btn" onclick="openTab('Tuesday')">Tuesday</button>
-    <button class="tab-btn" id="Wednesday-btn" onclick="openTab('Wednesday')">Wednesday</button>
-    <button class="tab-btn" id="Thursday-btn" onclick="openTab('Thursday')">Thursday</button>
-    <button class="tab-btn" id="Friday-btn" onclick="openTab('Friday')">Friday</button>
-    <button class="tab-btn" id="Saturday-btn" onclick="openTab('Saturday')">Saturday</button>
-    <button class="tab-btn" id="Sunday-btn" onclick="openTab('Sunday')">Sunday</button>
+  <!-- Stopwatch -->
+  <div id="stopwatch">
+      <h2>Stopwatch</h2>
+      <div id="timer">00:00:00</div>
+      <button id="startStopBtn">Start</button>
+      <button id="resetBtn">Reset</button>
+  </div>
 
-  </div>
-<div id="Monday" class="tab-content">
-  <h3>Monday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Monday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of KB Military Press">KB Military Press</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of KB Floor Press">KB Floor Press</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of KB Triceps Extensions">KB Triceps Extensions</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Tricep Pulldown (Cable)">Tricep Pulldown (Cable)</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Kettlebell Single-Arm Push Press">Kettlebell Single-Arm Push Press</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Push-Ups">Push-Ups</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
-  </div>
-</div>
-</div>
-<div id="Tuesday" class="tab-content">
-  <h3>Tuesday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Tuesday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of KB Front Squat">KB Front Squat</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of KB Goblet Split Squat">KB Goblet Split Squat</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of KB Deadlift">KB Deadlift</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of KB Farmers Carry">KB Farmers Carry</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Plank on KB">Plank on KB</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
-  </div>
-</div>
-</div>
-<div id="Wednesday" class="tab-content">
-  <h3>Wednesday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Wednesday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of Lat Pulldown">Lat Pulldown</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of Machine/KB Row">Machine/KB Row</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of KB Suitcase Deadlift">KB Suitcase Deadlift</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Face Pull (Pulley)">Face Pull (Pulley)</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Biceps Curl">Biceps Curl</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
-  </div>
-</div>
-</div>
-<div id="Thursday" class="tab-content">
-  <h3>Thursday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Thursday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="5 sets of KB Swings (EMOM)">KB Swings (EMOM)</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 4"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 5"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Double KB Clean &amp; Press">Double KB Clean &amp; Press</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of KB Reverse Lunge to Clean">KB Reverse Lunge to Clean</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Turkish Get-Up">Turkish Get-Up</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of KB Carry/Walk">KB Carry/Walk</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
-  </div>
-</div>
-</div>
-<div id="Friday" class="tab-content">
-  <h3>Friday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Friday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="1 sets of Rest/Light Mobility">Rest/Light Mobility</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Friday-cb" title="Set 1"></label>
-  </div>
-</div>
-</div>
-<div id="Saturday" class="tab-content">
-  <h3>Saturday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Saturday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Bodyweight Mobility Drills">Bodyweight Mobility Drills</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Saturday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Saturday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Saturday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="1 sets of Yoga/Stretching">Yoga/Stretching</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Saturday-cb" title="Set 1"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Light KB Complex">Light KB Complex</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Saturday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Saturday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Saturday-cb" title="Set 3"></label>
-  </div>
-</div>
-</div>
-<div id="Sunday" class="tab-content">
-  <h3>Sunday Workout</h3>
-  <button class="reset-btn" onclick="resetCheckboxes('Sunday')">Reset</button>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of KB Bulgarian Split Squat">KB Bulgarian Split Squat</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of Leg Curls/Press">Leg Curls/Press</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="4 sets of KB Sumo Deadlift">KB Sumo Deadlift</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 4"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Hanging Knee Raise">Hanging Knee Raise</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
-  </div>
-</div>
-<div class="exercise-row">
-  <div class="exercise-name" title="3 sets of Optional: Push-Ups/Ropes">Optional: Push-Ups/Ropes</div>
-  <div class="sets-grid">
-    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
-    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
-  </div>
-</div>
-</div>
+  <!-- Tabs for Days -->
+  <nav role="tablist" aria-label="Workout Days" id="dayTabs">
+      <button role="tab" id="tab-monday" aria-selected="true" aria-controls="panel-monday" tabindex="0">Monday</button>
+      <button role="tab" id="tab-tuesday" aria-selected="false" aria-controls="panel-tuesday" tabindex="-1">Tuesday</button>
+      <button role="tab" id="tab-wednesday" aria-selected="false" aria-controls="panel-wednesday" tabindex="-1">Wednesday</button>
+      <button role="tab" id="tab-thursday" aria-selected="false" aria-controls="panel-thursday" tabindex="-1">Thursday</button>
+      <button role="tab" id="tab-friday" aria-selected="false" aria-controls="panel-friday" tabindex="-1">Friday</button>
+      <button role="tab" id="tab-saturday" aria-selected="false" aria-controls="panel-saturday" tabindex="-1">Saturday</button>
+      <button role="tab" id="tab-sunday" aria-selected="false" aria-controls="panel-sunday" tabindex="-1">Sunday</button>
+  </nav>
 
-</div>
+  <!-- Tab Panels for Workouts -->
+  <main>
+      <!-- Reset tracking button -->
+      <button id="resetTrackingBtn" aria-label="Reset workout tracking">Reset Tracking</button>
+
+      <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday">
+          <ul>
+              <li>KB Military Press: 
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (8-10 reps)
+              </li>
+              <li>KB Floor Press: 
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (8-10 reps)
+              </li>
+              <li>KB Triceps Extensions:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (10-12 reps)
+              </li>
+              <li>Tricep Pulldown Cable:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (10-12 reps)
+              </li>
+              <li>Kettlebell Single-Arm Push Press:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (8-10 reps)
+              </li>
+              <li>Push-Ups:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (To failure or 12-15 reps)
+              </li>
+          </ul>
+      </section>
+
+      <section id="panel-tuesday" role="tabpanel" aria-labelledby="tab-tuesday" hidden>
+          <ul>
+              <li>KB Front Squat:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (10 reps)
+              </li>
+              <li>KB Goblet Split Squat:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (10 reps per leg)
+              </li>
+              <li>KB Deadlift:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (8-10 reps)
+              </li>
+              <li>KB Farmers Carry:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (40 meters or 30-60 seconds)
+              </li>
+              <li>Plank on KB:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (30-45 seconds)
+              </li>
+          </ul>
+      </section>
+
+      <section id="panel-wednesday" role="tabpanel" aria-labelledby="tab-wednesday" hidden>
+          <ul>
+              <li>Lat Pulldown:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (10-12 reps)
+              </li>
+              <li>Machine KB Row:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (10-12 reps)
+              </li>
+              <li>KB Suitcase Deadlift:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (10 reps per side)
+              </li>
+              <li>Face Pull Pulley:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (12-15 reps)
+              </li>
+              <li>Biceps Curl:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (12 reps)
+              </li>
+          </ul>
+      </section>
+
+      <section id="panel-thursday" role="tabpanel" aria-labelledby="tab-thursday" hidden>
+          <ul>
+              <li>KB Swings EMOM:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  <label><input type="checkbox" /> Set 5</label>
+                  (20 reps Every Minute On the Minute)
+              </li>
+              <li>Double KB Clean Press:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (8 reps)
+              </li>
+              <li>KB Reverse Lunge to Clean:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (10 reps per leg)
+              </li>
+              <li>Turkish Get-Up:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (5 reps per side)
+              </li>
+              <li>KB Carry Walk:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (60 seconds)
+              </li>
+          </ul>
+      </section>
+
+      <section id="panel-friday" role="tabpanel" aria-labelledby="tab-friday" hidden>
+          <ul>
+              <li>Rest or Light Mobility:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  (1-2 sets as needed)
+              </li>
+          </ul>
+      </section>
+
+      <section id="panel-saturday" role="tabpanel" aria-labelledby="tab-saturday" hidden>
+          <ul>
+              <li>Bodyweight Mobility Drills:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (10-15 reps)
+              </li>
+              <li>Yoga Stretching:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  (hold stretches 20-60 seconds)
+              </li>
+              <li>Light KB Complex:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (3 rounds at a comfortable pace)
+              </li>
+          </ul>
+      </section>
+
+      <section id="panel-sunday" role="tabpanel" aria-labelledby="tab-sunday" hidden>
+          <ul>
+              <li>KB Bulgarian Split Squat:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (8-10 reps per leg)
+              </li>
+              <li>Leg Curls/Press:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (10-12 reps)
+              </li>
+              <li>KB Sumo Deadlift:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  <label><input type="checkbox" /> Set 4</label>
+                  (10 reps)
+              </li>
+              <li>Hanging Knee Raise:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (12 reps)
+              </li>
+              <li>Optional Push-Ups or Ropes:
+                  <label><input type="checkbox" /> Set 1</label>
+                  <label><input type="checkbox" /> Set 2</label>
+                  <label><input type="checkbox" /> Set 3</label>
+                  (3 sets as desired)
+              </li>
+          </ul>
+      </section>
+  </main>
+  
+  <script src="app.js"></script>
 </body>
 </html>
