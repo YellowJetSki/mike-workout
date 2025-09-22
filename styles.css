@@ -523,3 +523,26 @@ textarea:focus {
     padding: 1.5rem 2rem 2rem;
   }
 }
+
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #000000, #223366);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+  color: #66aaff;
+  font-family: 'Inter', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  user-select: none;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+#splash-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+

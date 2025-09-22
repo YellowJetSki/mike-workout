@@ -1,3 +1,13 @@
+  window.addEventListener("load", () => {
+    const splash = document.getElementById("splash-screen");
+    setTimeout(() => {
+      splash.classList.add("fade-out");
+      setTimeout(() => {
+        splash.style.display = "none";
+      }, 600); // match CSS transition duration
+    }, 1500);
+  });
+
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll('#dayTabs [role="tab"]');
   const panels = document.querySelectorAll('[role="tabpanel"]');
@@ -26,11 +36,21 @@ document.addEventListener("DOMContentLoaded", () => {
   let restSecondsLeft = 0;
   let restRunning = false;
 
-  const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+  const dayMap = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
 
   function getOttawaDayIndex() {
     try {
-      const ottawaDate = new Date().toLocaleString("en-US", { timeZone: "America/Toronto" });
+      const ottawaDate = new Date().toLocaleString("en-US", {
+        timeZone: "America/Toronto",
+      });
       return new Date(ottawaDate).getDay();
     } catch {
       return new Date().getDay();
@@ -38,18 +58,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function activateTab(day) {
-    tabs.forEach(tab => {
-      const selected = (tab.id === `tab-${day}`);
+    tabs.forEach((tab) => {
+      const selected = tab.id === `tab-${day}`;
       tab.setAttribute("aria-selected", selected);
       tab.tabIndex = selected ? 0 : -1;
     });
 
-    panels.forEach(panel => {
+    panels.forEach((panel) => {
       if (panel.id === `panel-${day}`) {
-        panel.removeAttribute('hidden');
+        panel.removeAttribute("hidden");
         panel.setAttribute("tabindex", 0);
       } else {
-        panel.setAttribute('hidden', '');
+        panel.setAttribute("hidden", "");
         panel.setAttribute("tabindex", -1);
       }
     });
@@ -59,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadProgress() {
-    panels.forEach(panel => {
+    panels.forEach((panel) => {
       const day = panel.id.replace("panel-", "");
       const saved = localStorage.getItem(`tracking-${day}`);
       if (saved) {
@@ -69,11 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
           data.states?.forEach((v, i) => {
             if (checkboxes[i]) checkboxes[i].checked = v;
           });
-          const textareas = panel.querySelectorAll('textarea');
+          const textareas = panel.querySelectorAll("textarea");
           data.notes?.forEach((txt, i) => {
             if (textareas[i]) textareas[i].value = txt;
           });
-        } catch { }
+        } catch {}
       }
     });
   }
@@ -82,18 +102,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const panel = document.getElementById(`panel-${day}`);
     if (!panel) return;
     const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-    const states = Array.from(checkboxes).map(cb => cb.checked);
-    const textareas = panel.querySelectorAll('textarea');
-    const notes = Array.from(textareas).map(ta => ta.value);
+    const states = Array.from(checkboxes).map((cb) => cb.checked);
+    const textareas = panel.querySelectorAll("textarea");
+    const notes = Array.from(textareas).map((ta) => ta.value);
     localStorage.setItem(`tracking-${day}`, JSON.stringify({ states, notes }));
   }
 
   function updateProgressIndicators() {
-    panels.forEach(panel => {
-      panel.querySelectorAll("li").forEach(li => {
+    panels.forEach((panel) => {
+      panel.querySelectorAll("li").forEach((li) => {
         const checkboxes = li.querySelectorAll("input[type='checkbox']");
         let completedSets = 0;
-        checkboxes.forEach(cb => { if(cb.checked) completedSets++; });
+        checkboxes.forEach((cb) => {
+          if (cb.checked) completedSets++;
+        });
         let indicator = li.querySelector(".progress-indicator");
         if (!indicator) {
           indicator = document.createElement("span");
@@ -106,30 +128,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateDayCompletionIndicators() {
-    tabs.forEach(tab => {
-      const day = tab.id.replace('tab-', '');
+    tabs.forEach((tab) => {
+      const day = tab.id.replace("tab-", "");
       const panel = document.getElementById(`panel-${day}`);
       if (!panel) return;
       const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
       if (allChecked && checkboxes.length > 0) {
-        tab.classList.add('completed');
+        tab.classList.add("completed");
       } else {
-        tab.classList.remove('completed');
+        tab.classList.remove("completed");
       }
     });
   }
 
   function setupAutoAdvance() {
-    panels.forEach(panel => {
-      panel.addEventListener('change', e => {
-        if (e.target.type === 'checkbox') {
-          const day = panel.id.replace('panel-', '');
+    panels.forEach((panel) => {
+      panel.addEventListener("change", (e) => {
+        if (e.target.type === "checkbox") {
+          const day = panel.id.replace("panel-", "");
           saveProgress(day);
           updateProgressIndicators();
           updateDayCompletionIndicators();
           if (e.target.checked) {
-            const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
+            const checkboxes = Array.from(
+              panel.querySelectorAll('input[type="checkbox"]')
+            );
             const idx = checkboxes.indexOf(e.target);
             if (idx !== -1 && idx + 1 < checkboxes.length) {
               checkboxes[idx + 1].focus();
@@ -144,7 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const h = Math.floor(sec / 3600);
     const m = Math.floor((sec % 3600) / 60);
     const s = sec % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    return `${h.toString().padStart(2, "0")}:${m
+      .toString()
+      .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   }
 
   function toggleStopwatch() {
@@ -173,22 +199,22 @@ document.addEventListener("DOMContentLoaded", () => {
     startStopBtn.setAttribute("aria-pressed", "false");
   }
 
-  resetBtn.addEventListener('click', resetStopwatch);
-  startStopBtn.addEventListener('click', toggleStopwatch);
+  resetBtn.addEventListener("click", resetStopwatch);
+  startStopBtn.addEventListener("click", toggleStopwatch);
 
-  resetTrackingBtn.addEventListener('click', () => {
-    panels.forEach(panel => {
+  resetTrackingBtn.addEventListener("click", () => {
+    panels.forEach((panel) => {
       const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-      checkboxes.forEach(cb => cb.checked = false);
-      const textareas = panel.querySelectorAll('textarea');
-      textareas.forEach(ta => ta.value = '');
-      localStorage.removeItem(`tracking-${panel.id.replace('panel-', '')}`);
+      checkboxes.forEach((cb) => (cb.checked = false));
+      const textareas = panel.querySelectorAll("textarea");
+      textareas.forEach((ta) => (ta.value = ""));
+      localStorage.removeItem(`tracking-${panel.id.replace("panel-", "")}`);
     });
     updateProgressIndicators();
     updateDayCompletionIndicators();
   });
 
-  startRestBtn.addEventListener('click', () => {
+  startRestBtn.addEventListener("click", () => {
     if (!restRunning) {
       restSecondsLeft = 60;
       updateRestTimer();
@@ -205,13 +231,13 @@ document.addEventListener("DOMContentLoaded", () => {
           startRestBtn.disabled = false;
           stopRestBtn.disabled = true;
           resetRestBtn.disabled = false;
-          alert('Rest timer completed!');
+          alert("Rest timer completed!");
         }
       }, 1000);
     }
   });
 
-  stopRestBtn.addEventListener('click', () => {
+  stopRestBtn.addEventListener("click", () => {
     if (restRunning) {
       clearInterval(restTimerInterval);
       restRunning = false;
@@ -221,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  resetRestBtn.addEventListener('click', () => {
+  resetRestBtn.addEventListener("click", () => {
     clearInterval(restTimerInterval);
     restSecondsLeft = 0;
     updateRestTimer();
@@ -234,41 +260,48 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateRestTimer() {
     const mins = Math.floor(restSecondsLeft / 60);
     const secs = restSecondsLeft % 60;
-    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(
+      2,
+      "0"
+    )}:${String(secs).padStart(2, "0")}`;
   }
 
-  closeSummaryBtn.addEventListener('click', () => {
-    workoutSummaryModal.style.display = 'none';
-    workoutSummaryModal.setAttribute('aria-hidden', 'true');
+  closeSummaryBtn.addEventListener("click", () => {
+    workoutSummaryModal.style.display = "none";
+    workoutSummaryModal.setAttribute("aria-hidden", "true");
   });
 
-  showSummaryBtn?.addEventListener('click', () => {
+  showSummaryBtn?.addEventListener("click", () => {
     const list = workoutSummaryList;
-    list.innerHTML = '';
-    let totalSets = 0, totalDone = 0;
-    let totalExercises = 0, completedExercises = 0;
+    list.innerHTML = "";
+    let totalSets = 0,
+      totalDone = 0;
+    let totalExercises = 0,
+      completedExercises = 0;
 
-    panels.forEach(panel => {
-      const day = panel.id.replace('panel-', '');
+    panels.forEach((panel) => {
+      const day = panel.id.replace("panel-", "");
       const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-      const exercises = panel.querySelectorAll('li');
+      const exercises = panel.querySelectorAll("li");
       totalExercises += exercises.length;
 
-      let dayDone = Array.from(checkboxes).filter(cb => cb.checked).length;
+      let dayDone = Array.from(checkboxes).filter((cb) => cb.checked).length;
       totalSets += checkboxes.length;
       totalDone += dayDone;
 
-      let dayCompletedExercises = Array.from(exercises).filter(li => {
+      let dayCompletedExercises = Array.from(exercises).filter((li) => {
         const sets = li.querySelectorAll('input[type="checkbox"]');
-        return Array.from(sets).every(cb => cb.checked);
+        return Array.from(sets).every((cb) => cb.checked);
       }).length;
 
       completedExercises += dayCompletedExercises;
 
-      if(dayDone === 0) return;
+      if (dayDone === 0) return;
 
       const li = document.createElement("li");
-      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: ${dayDone} of ${checkboxes.length} sets completed`;
+      li.textContent = `${
+        day.charAt(0).toUpperCase() + day.slice(1)
+      }: ${dayDone} of ${checkboxes.length} sets completed`;
       list.appendChild(li);
     });
 
@@ -287,16 +320,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setUpTabs() {
     tabs.forEach((tab, idx) => {
-      tab.addEventListener('click', () => {
-        activateTab(tab.id.replace('tab-', ''));
+      tab.addEventListener("click", () => {
+        activateTab(tab.id.replace("tab-", ""));
       });
-      tab.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') {
+      tab.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") {
           tabs[(idx + 1) % tabs.length].focus();
-        } else if (e.key === 'ArrowLeft') {
+        } else if (e.key === "ArrowLeft") {
           tabs[(idx - 1 + tabs.length) % tabs.length].focus();
-        } else if (e.key === 'Enter' || e.key === ' ') {
-          activateTab(tab.id.replace('tab-', ''));
+        } else if (e.key === "Enter" || e.key === " ") {
+          activateTab(tab.id.replace("tab-", ""));
         }
       });
     });
