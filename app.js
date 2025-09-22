@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const startStopBtn = document.getElementById("startStopBtn");
   const resetBtn = document.getElementById("resetBtn");
 
-  // Feature elements (will be created dynamically)
+  // Feature elements for rest timer UI created dynamically later
   let timerPanel = null;
   let timerDisplayRest = null;
   let timerControls = null;
@@ -18,85 +18,91 @@ document.addEventListener("DOMContentLoaded", () => {
   let elapsedSeconds = 0;
   let running = false;
 
-  // Rest Timer state
+  // Rest timer state
   let restTimerInterval = null;
   let restSecondsLeft = 0;
   let restRunning = false;
 
-  // Get Ottawa current day (0=Sunday, 1=Monday, ..., 6=Saturday)
+  // Map JS day index to day keys used in tabs and panels
+  const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+
+  // Get current day in Ottawa timezone (0=Sunday, 1=Monday, etc.)
   function getOttawaDayIndex() {
     try {
-      const ottawaDate = new Date().toLocaleString("en-CA", { timeZone: "America/Toronto" });
-      const date = new Date(ottawaDate);
-      return date.getDay();
+      const ottawaDateString = new Date().toLocaleString("en-CA", { timeZone: "America/Toronto" });
+      const ottawaDate = new Date(ottawaDateString);
+      return ottawaDate.getDay();
     } catch {
       return new Date().getDay();
     }
   }
 
-  // Map JS day index to tab id
-  const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-
-  function activateTab(day) {
+  // Activate tab by day key: update aria-selected, tabIndex on tabs and show/hide panels
+  function activateTab(dayKey) {
     tabs.forEach(tab => {
-      const selected = tab.id === `tab-${day}`;
+      const selected = tab.id === `tab-${dayKey}`;
       tab.setAttribute("aria-selected", selected);
       tab.tabIndex = selected ? 0 : -1;
     });
+
     panels.forEach(panel => {
-      panel.hidden = panel.id !== `panel-${day}`;
+      const isActive = panel.id === `panel-${dayKey}`;
+      panel.hidden = !isActive;
+      if (isActive) {
+        panel.setAttribute("tabindex", "0");
+      } else {
+        panel.setAttribute("tabindex", "-1");
+      }
     });
   }
 
-  // Load checkbox and notes states from localStorage
+  // Load saved checkbox and notes state from localStorage per day panel
   function loadTrackingState() {
     panels.forEach(panel => {
       const day = panel.id.replace("panel-", "");
       const saved = localStorage.getItem(`tracking-${day}`);
       if (saved) {
         try {
-          const parsed = JSON.parse(saved);
-          const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-          checkboxes.forEach((checkbox, idx) => {
-            checkbox.checked = !!parsed.states[idx];
-          });
-          // Restore notes
-          const notes = panel.querySelectorAll('.exercise-notes-container textarea');
-          notes.forEach((textarea, idx) => {
-            if(parsed.notes && parsed.notes[idx]) {
-              textarea.value = parsed.notes[idx];
-            }
-          });
+          const data = JSON.parse(saved);
+          if (data?.states) {
+            const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox, i) => {
+              checkbox.checked = !!data.states[i];
+            });
+          }
+          if (data?.notes) {
+            const textareas = panel.querySelectorAll('.exercise-notes-container textarea');
+            textareas.forEach((textarea, i) => {
+              if (data.notes[i]) textarea.value = data.notes[i];
+            });
+          }
         } catch {}
       }
     });
   }
 
-  // Save checkbox and notes states to localStorage
+  // Save checkbox and notes state to localStorage per day panel
   function saveTrackingState(day) {
     const panel = document.getElementById(`panel-${day}`);
     if (!panel) return;
-    const states = [];
-    panel.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      states.push(checkbox.checked);
-    });
-    const notes = [];
-    panel.querySelectorAll('.exercise-notes-container textarea').forEach(textarea => {
-      notes.push(textarea.value);
-    });
-    const data = {states, notes};
-    localStorage.setItem(`tracking-${day}`, JSON.stringify(data));
+
+    const states = Array.from(panel.querySelectorAll('input[type="checkbox"]'))
+      .map(chk => chk.checked);
+    const notes = Array.from(panel.querySelectorAll('.exercise-notes-container textarea'))
+      .map(textarea => textarea.value);
+
+    localStorage.setItem(`tracking-${day}`, JSON.stringify({ states, notes }));
   }
 
-  // Add notes textareas dynamically for each exercise
+  // Dynamically add exercise notes textarea to each li in all panels
   function addExerciseNotes() {
     panels.forEach(panel => {
       panel.querySelectorAll('li').forEach(li => {
         if (!li.querySelector('.exercise-notes-container')) {
           const notesDiv = document.createElement('div');
-          notesDiv.className = "exercise-notes-container";
+          notesDiv.className = 'exercise-notes-container';
           const textarea = document.createElement('textarea');
-          textarea.placeholder = "Add notes (weight, form, etc.)...";
+          textarea.placeholder = 'Add notes (weight, form, etc.)...';
           notesDiv.appendChild(textarea);
           li.appendChild(notesDiv);
         }
@@ -104,18 +110,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Auto advance checkboxes - focus next after checking current
+  // Handle checking checkboxes auto focus on next checkbox if any
   function handleAutoAdvance() {
     panels.forEach(panel => {
-      panel.addEventListener("change", (e) => {
-        if (e.target && e.target.type === "checkbox") {
-          const day = panel.id.replace("panel-", "");
+      panel.addEventListener('change', (e) => {
+        if (e.target && e.target.type === 'checkbox') {
+          const day = panel.id.replace('panel-', '');
           saveTrackingState(day);
-          if(e.target.checked) {
+
+          if (e.target.checked) {
             const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
             const idx = checkboxes.indexOf(e.target);
-            if(idx >= 0 && idx+1 < checkboxes.length) {
-              checkboxes[idx+1].focus();
+            if (idx >= 0 && idx + 1 < checkboxes.length) {
+              checkboxes[idx + 1].focus();
             }
           }
         }
@@ -123,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initialize Timer Panel UI for Rest Timer feature
+  // Create rest timer UI at bottom
   function createTimerPanel() {
     timerPanel = document.createElement('div');
     timerPanel.id = 'timerPanel';
@@ -157,20 +164,19 @@ document.addEventListener("DOMContentLoaded", () => {
     timerPanel.appendChild(timerControls);
     document.body.appendChild(timerPanel);
 
-    // Event handlers for rest timer buttons
     startBtn.addEventListener('click', () => {
-      if(restRunning) return;
-      // Default rest 60 seconds or prompt user
+      if (restRunning) return;
       restSecondsLeft = 60;
       updateRestDisplay();
       restRunning = true;
       startBtn.disabled = true;
       stopBtn.disabled = false;
       resetBtnRest.disabled = false;
+
       restTimerInterval = setInterval(() => {
         restSecondsLeft--;
         updateRestDisplay();
-        if(restSecondsLeft <= 0) {
+        if (restSecondsLeft <= 0) {
           clearInterval(restTimerInterval);
           restRunning = false;
           startBtn.disabled = false;
@@ -182,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     stopBtn.addEventListener('click', () => {
-      if(!restRunning) return;
+      if (!restRunning) return;
       clearInterval(restTimerInterval);
       restRunning = false;
       startBtn.disabled = false;
@@ -201,13 +207,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Update rest timer display text
   function updateRestDisplay() {
     const minutes = Math.floor(restSecondsLeft / 60).toString().padStart(2, '0');
     const seconds = (restSecondsLeft % 60).toString().padStart(2, '0');
     timerDisplayRest.textContent = `Rest: ${minutes}:${seconds}`;
   }
 
-  // Generate workout summary report modal
+  // Create workout summary modal dialog
   function createWorkoutSummaryModal() {
     const modal = document.createElement('div');
     modal.id = 'workoutSummaryModal';
@@ -236,39 +243,39 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.appendChild(content);
     document.body.appendChild(modal);
 
-    return {modal, list};
+    return { modal, list };
   }
 
-  // Show workout summary with sets completed and total time
+  // Show workout summary content in modal
   function showWorkoutSummary() {
-    const {modal, list} = workoutSummaryElements;
+    const { modal, list } = workoutSummaryElements;
     list.innerHTML = '';
     let totalSets = 0;
     let completedSets = 0;
 
     panels.forEach(panel => {
-      const day = panel.id.replace("panel-","");
+      const day = panel.id.replace('panel-', '');
       const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-      let dayCompletedSets = 0;
-      let dayTotalSets = checkboxes.length;
+      let dayCompleted = 0;
       checkboxes.forEach(chk => {
-        if(chk.checked) dayCompletedSets++;
+        if (chk.checked) dayCompleted++;
       });
-      totalSets += dayTotalSets;
-      completedSets += dayCompletedSets;
+      let dayTotal = checkboxes.length;
+      totalSets += dayTotal;
+      completedSets += dayCompleted;
 
-      if(dayCompletedSets === 0) return;
+      if (dayCompleted === 0) return;
 
-      let daySummary = document.createElement('li');
-      daySummary.innerHTML = `<strong>${day.charAt(0).toUpperCase()+day.slice(1)}</strong>: ${dayCompletedSets} of ${dayTotalSets} sets completed`;
+      const daySummary = document.createElement('li');
+      daySummary.innerHTML = `<strong>${day.charAt(0).toUpperCase() + day.slice(1)}</strong>: ${dayCompleted} of ${dayTotal} sets completed`;
       list.appendChild(daySummary);
     });
 
-    let totalSummary = document.createElement('li');
+    const totalSummary = document.createElement('li');
     totalSummary.innerHTML = `<strong>Total Sets:</strong> ${completedSets} of ${totalSets} completed`;
     list.appendChild(totalSummary);
 
-    let timeSummary = document.createElement('li');
+    const timeSummary = document.createElement('li');
     timeSummary.innerHTML = `<strong>Total Workout Time:</strong> ${formatTime(elapsedSeconds)}`;
     list.appendChild(timeSummary);
 
@@ -276,28 +283,29 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.focus();
   }
 
-  // Format seconds for display
-  function formatTime(sec) {
-    const h = Math.floor(sec / 3600);
-    const m = Math.floor((sec % 3600) / 60);
-    const s = sec % 60;
-    return `${h.toString().padStart(2,"0")}:${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
+  // Format seconds to hh:mm:ss string
+  function formatTime(totalSeconds) {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
+  // Stopwatch control handlers
   function startStopwatch() {
     if (running) {
       clearInterval(stopwatchInterval);
       running = false;
-      startStopBtn.textContent = "Start";
-      startStopBtn.setAttribute("aria-pressed", "false");
+      startStopBtn.textContent = 'Start';
+      startStopBtn.setAttribute('aria-pressed', 'false');
     } else {
       stopwatchInterval = setInterval(() => {
         elapsedSeconds++;
         timerDisplay.textContent = formatTime(elapsedSeconds);
       }, 1000);
       running = true;
-      startStopBtn.textContent = "Stop";
-      startStopBtn.setAttribute("aria-pressed", "true");
+      startStopBtn.textContent = 'Stop';
+      startStopBtn.setAttribute('aria-pressed', 'true');
     }
   }
 
@@ -306,8 +314,8 @@ document.addEventListener("DOMContentLoaded", () => {
     elapsedSeconds = 0;
     timerDisplay.textContent = formatTime(elapsedSeconds);
     running = false;
-    startStopBtn.textContent = "Start";
-    startStopBtn.setAttribute("aria-pressed", "false");
+    startStopBtn.textContent = 'Start';
+    startStopBtn.setAttribute('aria-pressed', 'false');
   }
 
   // Add workout summary button near stopwatch
@@ -331,30 +339,29 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('stopwatch').appendChild(btn);
   }
 
-  // Reset tracking clears checkboxes, notes and localStorage
-  resetTrackingBtn.addEventListener("click", () => {
+  // Reset tracking clears all progress and localStorage
+  resetTrackingBtn.addEventListener('click', () => {
     panels.forEach(panel => {
-      panel.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-      });
-      panel.querySelectorAll('.exercise-notes-container textarea').forEach(textarea => {
-        textarea.value = '';
-      });
-      const day = panel.id.replace("panel-", "");
+      panel.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      panel.querySelectorAll('.exercise-notes-container textarea').forEach(ta => ta.value = '');
+      const day = panel.id.replace('panel-', '');
       localStorage.removeItem(`tracking-${day}`);
     });
   });
 
-  // Initialize
+  // Initialization sequence
   addExerciseNotes();
   handleAutoAdvance();
   createTimerPanel();
   const workoutSummaryElements = createWorkoutSummaryModal();
   addSummaryButton();
-  const currentDay = dayMap[getOttawaDayIndex()];
-  activateTab(currentDay);
+
+  const currentDayIndex = getOttawaDayIndex();
+  const currentDayKey = dayMap[currentDayIndex];
+
+  activateTab(currentDayKey);
   loadTrackingState();
 
-  startStopBtn.addEventListener("click", startStopwatch);
-  resetBtn.addEventListener("click", resetStopwatch);
+  startStopBtn.addEventListener('click', startStopwatch);
+  resetBtn.addEventListener('click', resetStopwatch);
 });
