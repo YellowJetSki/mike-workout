@@ -1,356 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Muscle Growth Workout Tracker - Clean Modern Design</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="header-wrapper">
-      <section
-        id="stopwatch"
-        role="region"
-        aria-label="Stopwatch timer controls"
-      >
-        <h2>Stopwatch</h2>
-        <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
-        <div class="button-row">
-          <button
-            id="startStopBtn"
-            aria-pressed="false"
-            aria-label="Start or stop stopwatch"
-          >
-            Start
-          </button>
-          <button id="resetBtn" aria-label="Reset stopwatch">Reset</button>
-        </div>
-        <button
-          id="showSummaryBtn"
-          aria-label="Show workout summary"
-          style="margin-top: 1rem"
-        >
-          Show Summary
-        </button>
-      </section>
-      <nav id="dayTabs" role="tablist" aria-label="Workout Days">
-        <button
-          id="tab-monday"
-          role="tab"
-          aria-controls="panel-monday"
-          aria-selected="true"
-          tabindex="0"
-        >
-          Monday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-        <button
-          id="tab-tuesday"
-          role="tab"
-          aria-controls="panel-tuesday"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Tuesday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-        <button
-          id="tab-wednesday"
-          role="tab"
-          aria-controls="panel-wednesday"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Wednesday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-        <button
-          id="tab-thursday"
-          role="tab"
-          aria-controls="panel-thursday"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Thursday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-        <button
-          id="tab-friday"
-          role="tab"
-          aria-controls="panel-friday"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Friday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-        <button
-          id="tab-saturday"
-          role="tab"
-          aria-controls="panel-saturday"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Saturday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-        <button
-          id="tab-sunday"
-          role="tab"
-          aria-controls="panel-sunday"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Sunday<span class="completion-indicator" aria-hidden="true"></span>
-        </button>
-      </nav>
-    </div>
-    <main>
-      <button
-        id="resetTrackingBtn"
-        aria-label="Reset workout tracking"
-        title="Reset workout tracking"
-      >
-        <span class="material-icons">autorenew</span>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Muscle Growth Workout Tracker - Clean Modern Design</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+<body>
+  <div id="header-wrapper">
+    <section id="stopwatch" role="region" aria-label="Stopwatch timer controls">
+      <h2>Stopwatch</h2>
+      <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
+      <div class="button-row">
+        <button id="startStopBtn" aria-pressed="false" aria-label="Start or stop stopwatch">Start</button>
+        <button id="resetBtn" aria-label="Reset stopwatch">Reset</button>
+      </div>
+      <button id="showSummaryBtn" aria-label="Show workout summary" style="margin-top: 1rem;">
+        Show Summary
       </button>
-      <section
-        id="panel-monday"
-        role="tabpanel"
-        aria-labelledby="tab-monday"
-        tabindex="0"
-      >
-        <ul>
-          <li>
-            <strong>KB Military Press</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <label><input type="checkbox" /> Set 4</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-          <li>
-            <strong>KB Floor Press</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <label><input type="checkbox" /> Set 4</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-          <li>
-            <strong>KB Triceps Extensions</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-          <li>
-            <strong>Tricep Pulldown Cable</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-          <li>
-            <strong>Kettlebell Single-Arm Push Press</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-          <li>
-            <strong>Push-Ups</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
+    </section>
 
-      <section
-        id="panel-tuesday"
-        role="tabpanel"
-        aria-labelledby="tab-tuesday"
-        tabindex="0"
-        hidden
-      >
-        <ul>
-          <li>
-            <strong>KB Front Squat</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <label><input type="checkbox" /> Set 4</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-          <li>
-            <strong>KB Goblet Split Squat</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
+    <nav id="dayTabs" role="tablist" aria-label="Workout Days">
+      <button id="tab-monday" role="tab" aria-controls="panel-monday" aria-selected="true" tabindex="0">
+        Monday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+      <button id="tab-tuesday" role="tab" aria-controls="panel-tuesday" aria-selected="false" tabindex="-1">
+        Tuesday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+      <button id="tab-wednesday" role="tab" aria-controls="panel-wednesday" aria-selected="false" tabindex="-1">
+        Wednesday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+      <button id="tab-thursday" role="tab" aria-controls="panel-thursday" aria-selected="false" tabindex="-1">
+        Thursday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+      <button id="tab-friday" role="tab" aria-controls="panel-friday" aria-selected="false" tabindex="-1">
+        Friday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+      <button id="tab-saturday" role="tab" aria-controls="panel-saturday" aria-selected="false" tabindex="-1">
+        Saturday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+      <button id="tab-sunday" role="tab" aria-controls="panel-sunday" aria-selected="false" tabindex="-1">
+        Sunday<span class="completion-indicator" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </div>
 
-      <section
-        id="panel-wednesday"
-        role="tabpanel"
-        aria-labelledby="tab-wednesday"
-        tabindex="0"
-        hidden
-      >
-        <ul>
-          <li>
-            <strong>Lat Pulldown</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <label><input type="checkbox" /> Set 4</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <section
-        id="panel-thursday"
-        role="tabpanel"
-        aria-labelledby="tab-thursday"
-        tabindex="0"
-        hidden
-      >
-        <ul>
-          <li>
-            <strong>KB Swings EMOM</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <label><input type="checkbox" /> Set 4</label>
-            <label><input type="checkbox" /> Set 5</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <section
-        id="panel-friday"
-        role="tabpanel"
-        aria-labelledby="tab-friday"
-        tabindex="0"
-        hidden
-      >
-        <ul>
-          <li>
-            <strong>Rest or Light Mobility</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <section
-        id="panel-saturday"
-        role="tabpanel"
-        aria-labelledby="tab-saturday"
-        tabindex="0"
-        hidden
-      >
-        <ul>
-          <li>
-            <strong>Bodyweight Mobility Drills</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <section
-        id="panel-sunday"
-        role="tabpanel"
-        aria-labelledby="tab-sunday"
-        tabindex="0"
-        hidden
-      >
-        <ul>
-          <li>
-            <strong>KB Bulgarian Split Squat</strong>
-            <label><input type="checkbox" /> Set 1</label>
-            <label><input type="checkbox" /> Set 2</label>
-            <label><input type="checkbox" /> Set 3</label>
-            <label><input type="checkbox" /> Set 4</label>
-            <div class="exercise-notes-container">
-              <textarea placeholder="Add notes"></textarea>
-            </div>
-          </li>
-        </ul>
-      </section>
-    </main>
-    <div id="timerPanel">
-      <div id="timerDisplay" aria-live="polite" aria-atomic="true">
-        Rest: 00:00
-      </div>
-      <div id="timerControls">
-        <button id="startRestBtn" aria-label="Start rest timer">Start</button>
-        <button id="stopRestBtn" aria-label="Stop rest timer" disabled>
-          Stop
-        </button>
-        <button id="resetRestBtn" aria-label="Reset rest timer" disabled>
-          Reset
-        </button>
-      </div>
-    </div>
-    <div
-      id="workoutSummaryModal"
-      role="dialog"
-      aria-modal="true"
-      aria-hidden="true"
-      aria-label="Workout summary"
-      tabindex="-1"
-    >
-      <div id="workoutSummaryContent">
-        <h2>Workout Summary</h2>
-        <ul></ul>
-        <button id="closeSummaryBtn" aria-label="Close summary">Close</button>
-      </div>
-    </div>
-    <button
-      id="resetTrackingBtn"
-      aria-label="Reset workout tracking"
-      title="Reset workout tracking"
-      aria-haspopup="true"
-      style="display: none"
-    >
+  <main>
+    <button id="resetTrackingBtn" aria-label="Reset workout tracking" title="Reset workout tracking">
       <span class="material-icons">autorenew</span>
     </button>
-    <script src="app.js"></script>
-  </body>
+
+    <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday" tabindex="0">
+      <ul>
+        <li>
+          <strong>KB Military Press</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Stand and press both kettlebells overhead, core tight, finish with arms locked out. (4 sets of 8-10 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Floor Press</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Lie on your back, press kettlebells from chest to locked out arms, elbows to floor each rep. (4 sets of 8-10 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Triceps Extensions</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Hold one kettlebell with both hands, lower behind head, extend arms upward. (3 sets of 10-12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Tricep Pulldown (Cable)</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Using cable machine, grasp handle/bar with overhand grip, pull down by extending your elbows, squeezing triceps at bottom. (3 sets of 10-12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Kettlebell Single-Arm Push Press</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Clean kettlebell to shoulder, dip slightly, press overhead explosively, lower under control. (3 sets of 8-10 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Push-Ups</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Body in plank, lower chest to floor, push back up. Hands on kettlebell handles for depth if desired. (3 sets to failure or 12-15 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="panel-tuesday" role="tabpanel" aria-labelledby="tab-tuesday" tabindex="0" hidden>
+      <ul>
+        <li>
+          <strong>KB Front Squat</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Clean kettlebells to rack, squat until thighs parallel, drive up keeping chest tall. (4 sets of 10 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Goblet Split Squat</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Hold kettlebell at chest, step back with one leg, lower until rear knee nears floor. Alternate legs. (3 sets of 10 reps per leg)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Deadlift</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Feet shoulder-width, hinge at hips, grip kettlebell between feet, stand tall, squeeze glutes at top. (4 sets of 8-10 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Farmers Carry</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Hold heavy kettlebells at sides, walk in controlled manner for distance or time. (3 sets of 40 meters or 30-60 seconds)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Plank on KB</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Hold plank with hands or feet on kettlebells to increase instability, keep core braced. (3 sets of 30-45 seconds)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="panel-wednesday" role="tabpanel" aria-labelledby="tab-wednesday" tabindex="0" hidden>
+      <ul>
+        <li>
+          <strong>Lat Pulldown</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Using machine, grip bar wider than shoulders, pull to chest, squeeze lats, control weight on return. (4 sets of 10-12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Machine/KB Row</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">On machine or bent over, row handle or kettlebell to waist, squeeze back, control down. (4 sets of 10-12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Suitcase Deadlift</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Hold kettlebell at side, feet shoulder-width, hinge at hips and stand. Switch sides. (3 sets of 10 reps per side)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Face Pull (Pulley)</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Rope attachment, pull towards face, elbows high, focus on upper back/rear delts. (3 sets of 12-15 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Biceps Curl</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Curl kettlebells or pulley handles with palms up, control both up and down. (3 sets of 12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="panel-thursday" role="tabpanel" aria-labelledby="tab-thursday" tabindex="0" hidden>
+      <ul>
+        <li>
+          <strong>KB Swings (EMOM)</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <label><input type="checkbox" /> Set 5</label>
+          <div class="exercise-description">Stand, swing kettlebell with hip hinge, snap hips forward, let KB float to chest, repeat. (5 sets of 20 reps every minute on the minute)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Double KB Clean & Press</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Clean two kettlebells to rack, press overhead, lower and repeat. (3 sets of 8 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Reverse Lunge to Clean</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Reverse lunge holding kettlebell then stand up and clean weight to rack, alternate legs. (3 sets of 10 reps per leg)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>Turkish Get-Up</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Lie down holding kettlebell above, stand up stepwise without dropping arm, then lower with control. (3 sets of 5 reps per side)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Carry/Walk</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Walk holding one or two kettlebells for distance or time. Maintain upright posture. (3 sets of 60 seconds)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes (weight, form, etc.)"></textarea></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="panel-friday" role="tabpanel" aria-labelledby="tab-friday" tabindex="0" hidden>
+      <ul>
+        <li>
+          <strong>Rest or Light Mobility</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <div class="exercise-description">Light stretching, foam rolling, or gentle mobility work to facilitate recovery. (As needed, 1-2 sets)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="panel-saturday" role="tabpanel" aria-labelledby="tab-saturday" tabindex="0" hidden>
+      <ul>
+        <li>
+          <strong>Bodyweight Mobility Drills</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Dynamic bodyweight movements to improve joint mobility and muscle activation. (3 sets of 10-15 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+        <li>
+          <strong>Yoga/Stretching</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Gentle yoga flows or static stretching for flexibility and relaxation. (Hold stretches 20-60 seconds)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+        <li>
+          <strong>Light KB Complex</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Simple kettlebell flow combining multiple movements for light conditioning. (3 rounds at comfortable pace)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="panel-sunday" role="tabpanel" aria-labelledby="tab-sunday" tabindex="0" hidden>
+      <ul>
+        <li>
+          <strong>KB Bulgarian Split Squat</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Back foot on bench, hold kettlebell at chest, lower rear knee to floor, stand up. Alternate legs. (4 sets of 8-10 reps per leg)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+        <li>
+          <strong>Leg Curls/Press</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Use Weider machine, curl legs or press away using legs for quad/hamstring focus. (4 sets of 10-12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+        <li>
+          <strong>KB Sumo Deadlift</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <label><input type="checkbox" /> Set 4</label>
+          <div class="exercise-description">Wide stance, toes out, grip kettlebell, hinge and stand up keeping knees out. (4 sets of 10 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+        <li>
+          <strong>Hanging Knee Raise</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Hang from bar, raise knees to chest, control down. Core tight. (3 sets of 12 reps)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+        <li>
+          <strong>Optional: Push-Ups/Ropes</strong>
+          <label><input type="checkbox" /> Set 1</label>
+          <label><input type="checkbox" /> Set 2</label>
+          <label><input type="checkbox" /> Set 3</label>
+          <div class="exercise-description">Add extra push-ups or battle rope work as time allows for additional conditioning. (As desired, 3 sets)</div>
+          <div class="exercise-notes-container"><textarea placeholder="Add notes"></textarea></div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <div id="timerPanel">
+    <div id="timerDisplay" aria-live="polite" aria-atomic="true">Rest: 00:00</div>
+    <div id="timerControls">
+      <button id="startRestBtn" aria-label="Start rest timer">Start</button>
+      <button id="stopRestBtn" aria-label="Stop rest timer" disabled>Stop</button>
+      <button id="resetRestBtn" aria-label="Reset rest timer" disabled>Reset</button>
+    </div>
+  </div>
+
+  <div id="workoutSummaryModal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Workout summary" tabindex="-1">
+    <div id="workoutSummaryContent">
+      <h2>Workout Summary</h2>
+      <ul></ul>
+      <button id="closeSummaryBtn" aria-label="Close summary">Close</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
 </html>
