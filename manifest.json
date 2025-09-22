@@ -1,0 +1,22 @@
+{
+  "name": "Muscle Growth Workout Tracker",
+  "short_name": "Workout Tracker",
+  "description": "Custom kettlebell and pulley workout tracker with progress logging and stopwatch.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#448AFF",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
