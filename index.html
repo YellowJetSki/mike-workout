@@ -4,482 +4,427 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Muscle Growth Workout Tracker with Progress Log</title>
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#448AFF" />
-<script>
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', function(){
-      navigator.serviceWorker.register('service-worker.js').then(function(registration){
-        console.log('ServiceWorker registration successful with scope:', registration.scope);
-      }).catch(function(err){
-        console.log('ServiceWorker registration failed:', err);
-      });
-    });
-  }
-</script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Open+Sans&display=swap');
-
-/* Base page constraints */
-html, body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  margin: 0; padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', 'Open Sans', sans-serif;
-  background-color: #121212;
-  color: #e1e8ff;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Container */
-.container {
-  max-width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(113, 167, 255, 0.3);
-  margin-bottom: 32px;
-  overflow-x: hidden;
-}
-
-/* Tabs */
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 3px solid #71a7ff;
-  border-radius: 12px 12px 0 0;
-  background-color: #1e1e1e;
-  overflow-x: hidden;
-}
-.tabs button {
-  flex: 1 1 48%;
-  min-width: 140px;
-  margin: 6px 1% 6px 1%;
-  padding: 12px;
-  border: none;
-  background: none;
-  color: #81aaff;
-  font-weight: 600;
-  font-size: 1.05rem;
-  cursor: pointer;
-  text-align: center;
-  white-space: normal;
-  border-bottom: 3px solid transparent;
-  outline: none;
-  transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-/* Active, hover states */
-.tabs button:hover, .tabs button.active {
-  background-color: #4497ff;
-  color: #e9f4ff;
-  border-bottom: 3px solid #e9f4ff;
-}
-
-/* Tab content */
-.tab-content {
-  background-color: #1e1e1e;
-  padding: 18px 16px;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 0 20px rgba(113, 167, 255, 0.3);
-  display: none;
-  overflow-x: hidden;
-  text-align: left;
-}
-.tab-content.active {
-  display: block;
-}
-
-/* Convert table to vertical card style on mobile */
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 12px;
-  display: block;
-}
-thead {
-  display: none; /* Hide headers */
-}
-tbody, tr {
-  display: block;
-  border: 1px solid #2c458a;
-  border-radius: 10px;
-  padding: 10px 16px;
-  margin-bottom: 12px;
-  background: #1b1b2a;
-}
-tr {
-  padding: 0;
-}
-td {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 10px;
-  font-size: 0.95rem;
-  border: none;
-  white-space: normal;
-  word-break: break-word;
-  border-bottom: 1px solid #2c458a;
-}
-
-/* Remove border from last td in block */
-td:last-child {
-  border-bottom: none;
-}
-
-/* Row label styling (simulate th) */
-td:first-child {
-  font-weight: 600;
-  color: #81aaff;
-  max-width: 45%;
-}
-
-/* Row content styling */
-td:last-child {
-  max-width: 50%;
-  text-align: right;
-  color: #cbd7ff;
-}
-
-/* Checkbox wrapper */
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* Checkboxes smaller on mobile */
-input[type=checkbox] {
-  width: 20px;
-  height: 20px;
-  margin: 0;
-  cursor: pointer;
-  accent-color: #71a7ff;
-  flex-shrink: 0;
-}
-
-/* Exercise description */
-.exercise-desc {
-  font-size: 0.88rem;
-  color: #aac9ff;
-  margin-top: 8px;
-  margin-bottom: 16px;
-  padding-left: 12px;
-  border-left: 4px solid #71a7ff;
-  max-height: 3.6em;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  cursor: pointer;
-  max-width: 100%;
-}
-.exercise-desc.expanded {
-  max-height: 100vh;
-}
-
-/* Stopwatch container fix for mobile */
-.stopwatch-container {
-  position: sticky;
-  top: 0;
-  background-color: #1e1e1e;
-  z-index: 999;
-  padding: 16px 12px;
-  border-bottom: 3px solid #64b5f6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  box-shadow: 0 4px 12px #0d47a1;
-  flex-wrap: wrap;
-}
-
-/* Stopwatch font */
-.stopwatch-time {
-  font-weight: 700;
-  font-size: 2.4rem;
-  color: #c7d6ff;
-  letter-spacing: 2.5px;
-  user-select: none;
-  font-family: 'Inter', sans-serif;
-  min-width: 120px;
-  text-align: center;
-}
-
-/* Stopwatch buttons */
-.stopwatch-btn, .reset-btn {
-  background-color: #448aff;
-  color: white;
-  border: none;
-  padding: 10px 26px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 26px;
-  cursor: pointer;
-  box-shadow: 0 6px 12px #357ae8;
-  transition: background-color 0.3s ease;
-  white-space: nowrap;
-  min-width: 120px;
-  margin: 4px 0;
-}
-.stopwatch-btn:hover, .reset-btn:hover {
-  background-color: #2962ff;
-}
-
-/* Responsive font sizes */
-@media (max-width: 600px) {
-  h1 {
-    font-size: 1.6rem;
-  }
-  h2 {
-    font-size: 1.2rem;
-  }
-  h3 {
-    font-size: 1.1rem;
-  }
-  .tabs button {
-    flex-basis: 100%;
-    margin: 6px 0;
-    font-size: 1rem;
-  }
-  table, thead, th, td, tr {
-    font-size: 0.9rem;
-  }
-  input[type=checkbox] {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-/* Additional minor resets */
-ul {
-  padding-left: 22px;
-  margin-top: 0;
-  margin-bottom: 1.1em;
-}
-li {
-  margin-bottom: 6px;
-}
-</style>
-</head>
-<body>
-
-<div class="stopwatch-container" role="region" aria-label="Workout timer">
-  <div id="stopwatch-time" class="stopwatch-time" aria-live="off">00:00</div>
-  <button id="start-btn" class="stopwatch-btn" aria-pressed="false" aria-label="Start timer">Start</button>
-  <button id="stop-btn" class="stopwatch-btn" aria-pressed="false" aria-label="Stop timer">Stop</button>
-  <button id="reset-btn" class="reset-btn" aria-label="Reset timer">Reset</button>
-</div>
-
-<h1>Muscle Growth Workout Tracker with Progress Log</h1>
-
-<div class="tabs" role="tablist" aria-label="Workout Days">
-  <button id="day1-btn" class="tab-btn active" role="tab" aria-selected="true" aria-controls="day1" tabindex="0" onclick="openTab('day1')">Day 1 - Back/Biceps</button>
-  <button id="day2-btn" class="tab-btn" role="tab" aria-selected="false" aria-controls="day2" tabindex="-1" onclick="openTab('day2')">Day 2 - Chest/Triceps</button>
-  <button id="day3-btn" class="tab-btn" role="tab" aria-selected="false" aria-controls="day3" tabindex="-1" onclick="openTab('day3')">Day 3 - Legs</button>
-</div>
-
-<!-- Day 1 Tab content -->
-<div id="day1" class="tab-content active" role="tabpanel" aria-labelledby="day1-btn" tabindex="0">
-  <h2>Day 1 - Back and Biceps</h2>
-  <table aria-describedby="desc-day1">
-    <tbody>
-      <tr>
-        <td>Pull-Up</td>
-        <td>
-          <div class="checkbox-wrapper">
-            <label>
-              <input type="checkbox" class="day1-cb" title="Set 1" /> Set 1
-            </label>
-            <label>
-              <input type="checkbox" class="day1-cb" title="Set 2" /> Set 2
-            </label>
-            <label>
-              <input type="checkbox" class="day1-cb" title="Set 3" /> Set 3
-            </label>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>Bent Over Row</td>
-        <td>
-          <div class="checkbox-wrapper">
-            <label>
-              <input type="checkbox" class="day1-cb" title="Set 1" /> Set 1
-            </label>
-            <label>
-              <input type="checkbox" class="day1-cb" title="Set 2" /> Set 2
-            </label>
-            <label>
-              <input type="checkbox" class="day1-cb" title="Set 3" /> Set 3
-            </label>
-          </div>
-        </td>
-      </tr>
-      <!-- Add more exercises/rows as needed -->
-    </tbody>
-  </table>
-  <div id="desc-day1" class="exercise-desc" role="region" aria-live="polite">
-    Focus on controlled pull-ups and bent-over rows to build your back and biceps effectively.
-  </div>
-</div>
-
-<!-- Day 2 Tab content -->
-<div id="day2" class="tab-content" role="tabpanel" aria-labelledby="day2-btn" tabindex="0">
-  <h2>Day 2 - Chest and Triceps</h2>
-  <table aria-describedby="desc-day2">
-    <tbody>
-      <tr>
-        <td>Push-Up</td>
-        <td>
-          <div class="checkbox-wrapper">
-            <label>
-              <input type="checkbox" class="day2-cb" title="Set 1" /> Set 1
-            </label>
-            <label>
-              <input type="checkbox" class="day2-cb" title="Set 2" /> Set 2
-            </label>
-            <label>
-              <input type="checkbox" class="day2-cb" title="Set 3" /> Set 3
-            </label>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>Dips</td>
-        <td>
-          <div class="checkbox-wrapper">
-            <label>
-              <input type="checkbox" class="day2-cb" title="Set 1" /> Set 1
-            </label>
-            <label>
-              <input type="checkbox" class="day2-cb" title="Set 2" /> Set 2
-            </label>
-            <label>
-              <input type="checkbox" class="day2-cb" title="Set 3" /> Set 3
-            </label>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div id="desc-day2" class="exercise-desc" role="region" aria-live="polite">
-    Push-ups and dips strengthen your chest and triceps for mass and definition.
-  </div>
-</div>
-
-<!-- Day 3 Tab content -->
-<div id="day3" class="tab-content" role="tabpanel" aria-labelledby="day3-btn" tabindex="0">
-  <h2>Day 3 - Legs</h2>
-  <table aria-describedby="desc-day3">
-    <tbody>
-      <tr>
-        <td>Squat</td>
-        <td>
-          <div class="checkbox-wrapper">
-            <label>
-              <input type="checkbox" class="day3-cb" title="Set 1" /> Set 1
-            </label>
-            <label>
-              <input type="checkbox" class="day3-cb" title="Set 2" /> Set 2
-            </label>
-            <label>
-              <input type="checkbox" class="day3-cb" title="Set 3" /> Set 3
-            </label>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>Leg Press</td>
-        <td>
-          <div class="checkbox-wrapper">
-            <label>
-              <input type="checkbox" class="day3-cb" title="Set 1" /> Set 1
-            </label>
-            <label>
-              <input type="checkbox" class="day3-cb" title="Set 2" /> Set 2
-            </label>
-            <label>
-              <input type="checkbox" class="day3-cb" title="Set 3" /> Set 3
-            </label>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div id="desc-day3" class="exercise-desc" role="region" aria-live="polite">
-    Target squats and leg press exercises to build powerful legs.
-  </div>
-</div>
-
+<link rel="stylesheet" href="styles.css" />
 <script>
 var stopwatchInterval;
 var elapsedTime = 0;
 var running = false;
-
 function formatTime(ms) {
-  var totalSeconds = Math.floor(ms / 1000);
-  var minutes = Math.floor(totalSeconds / 60);
-  var seconds = totalSeconds % 60;
-  return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
+    var totalSeconds = Math.floor(ms / 1000);
+    var minutes = Math.floor(totalSeconds / 60);
+    var seconds = totalSeconds % 60;
+    return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
 }
-
 function updateStopwatch() {
-  elapsedTime += 1000;
-  document.getElementById('stopwatch-time').innerText = formatTime(elapsedTime);
+    elapsedTime += 1000;
+    document.getElementById('stopwatch-time').innerText = formatTime(elapsedTime);
 }
-
 function startStopwatch() {
-  if (!running) {
-    running = true;
-    stopwatchInterval = setInterval(updateStopwatch, 1000);
-  }
+    if (!running) {
+        running = true;
+        stopwatchInterval = setInterval(updateStopwatch, 1000);
+    }
 }
-
 function stopStopwatch() {
-  if (running) {
-    running = false;
-    clearInterval(stopwatchInterval);
-  }
+    if (running) {
+        running = false;
+        clearInterval(stopwatchInterval);
+    }
 }
-
 function resetStopwatch() {
-  stopStopwatch();
-  elapsedTime = 0;
-  document.getElementById('stopwatch-time').innerText = formatTime(elapsedTime);
+    stopStopwatch();
+    elapsedTime = 0;
+    document.getElementById('stopwatch-time').innerText = formatTime(elapsedTime);
 }
-
-document.getElementById('start-btn').addEventListener('click', startStopwatch);
-document.getElementById('stop-btn').addEventListener('click', stopStopwatch);
-document.getElementById('reset-btn').addEventListener('click', resetStopwatch);
-
 function openTab(tabName) {
   var i;
   var x = document.getElementsByClassName('tab-content');
   var btns = document.getElementsByClassName('tab-btn');
-  for (i = 0; i < x.length; i++) {
-    x[i].classList.remove('active');
-    x[i].setAttribute('aria-hidden', 'true');
-  }
-  for (i = 0; i < btns.length; i++) {
-    btns[i].classList.remove('active');
-    btns[i].setAttribute('aria-selected', 'false');
-    btns[i].setAttribute('tabindex', '-1');
-  }
+  for (i = 0; i < x.length; i++) { x[i].classList.remove('active'); }
+  for (i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
   document.getElementById(tabName).classList.add('active');
-  document.getElementById(tabName).setAttribute('aria-hidden', 'false');
-  var btn = document.getElementById(tabName + '-btn');
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected', 'true');
-  btn.setAttribute('tabindex', '0');
-  btn.focus();
+  document.getElementById(tabName + '-btn').classList.add('active');
 }
-
-/* Initial tab state */
-openTab('day1');
+function resetCheckboxes(day) {
+    var checkBoxes = document.querySelectorAll('.' + day + '-cb');
+    for (var i = 0; i < checkBoxes.length; i++) {
+        checkBoxes[i].checked = false;
+    }
+}
+function toggleDescription(element) {
+  if(element.classList.contains('expanded')) {
+    element.classList.remove('expanded');
+  } else {
+    element.classList.add('expanded');
+  }
+}
+function saveProgress(day, exercise) {
+  var weight = document.getElementById(day + '_' + exercise + '_weight').value;
+  var notes = document.getElementById(day + '_' + exercise + '_notes').value;
+  var key = day + '_' + exercise + '_progress';
+  var data = {weight: weight, notes: notes};
+  localStorage.setItem(key, JSON.stringify(data));
+  alert('Progress saved for ' + exercise + ' on ' + day);
+}
+function loadProgress() {
+  var workouts = {
+    "Monday": [["KB Military Press", 4], ["KB Floor Press", 4], ["KB Triceps Extensions", 3], ["Tricep Pulldown (Cable)", 3], ["Kettlebell Single-Arm Push Press", 3], ["Push-Ups", 3]],
+    "Tuesday": [["KB Front Squat", 4], ["KB Goblet Split Squat", 3], ["KB Deadlift", 4], ["KB Farmers Carry", 3], ["Plank on KB", 3]],
+    "Wednesday": [["Lat Pulldown", 4], ["Machine/KB Row", 4], ["KB Suitcase Deadlift", 3], ["Face Pull (Pulley)", 3], ["Biceps Curl", 3]],
+    "Thursday": [["KB Swings (EMOM)", 5], ["Double KB Clean & Press", 3], ["KB Reverse Lunge to Clean", 3], ["Turkish Get-Up", 3], ["KB Carry/Walk", 3]],
+    "Friday": [["Rest/Light Mobility", 1]],
+    "Saturday": [["Bodyweight Mobility Drills", 3], ["Yoga/Stretching", 1], ["Light KB Complex", 3]],
+    "Sunday": [["KB Bulgarian Split Squat", 4], ["Leg Curls/Press", 4], ["KB Sumo Deadlift", 4], ["Hanging Knee Raise", 3], ["Optional: Push-Ups/Ropes", 3]]
+  };
+  for (const day in workouts) {
+    let exercises = workouts[day];
+    for (let i=0; i<exercises.length; i++) {
+      let exercise = exercises[i][0].replace(/\W+/g, '_');
+      let key = day + '_' + exercise + '_progress';
+      let val = localStorage.getItem(key);
+      if (val) {
+        let data = JSON.parse(val);
+        let weightId = day + '_' + exercise + '_weight';
+        let notesId = day + '_' + exercise + '_notes';
+        if(document.getElementById(weightId)) document.getElementById(weightId).value = data.weight;
+        if(document.getElementById(notesId)) document.getElementById(notesId).value = data.notes;
+      }
+    }
+  }
+}
+window.onload = function() {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const today = days[new Date().getDay()];
+  if(document.getElementById(today + '-btn')) {
+    openTab(today);
+  } else {
+    openTab('Monday');
+  }
+  loadProgress();
+};
 </script>
+</head>
+<body>
+<div class="container">
+<h1>Weekly Kettlebell & Pulley Muscle Growth Program - Tracking & Progress Log</h1>
+<p><em>4-Week, Evidence-Based Plan</em></p>
+<div class="stopwatch-container">
+  <span id="stopwatch-time" class="stopwatch-time">00:00</span>
+  <button class="stopwatch-btn" onclick="startStopwatch()">Start</button>
+  <button class="stopwatch-btn" onclick="stopStopwatch()">Stop</button>
+  <button class="stopwatch-btn" onclick="resetStopwatch()">Reset</button>
+</div>
+<h2>Weekly Split</h2>
+<ul>
+  <li>Monday: Upper Body Push</li>
+  <li>Tuesday: Lower Body + Core</li>
+  <li>Wednesday: Upper Body Pull</li>
+  <li>Thursday: Full Body/Conditioning (AM)</li>
+  <li>Friday: Rest/Mobility</li>
+  <li>Saturday: Optional Active Recovery / Light Work</li>
+  <li>Sunday: Lower Body + Accessories</li>
+</ul>
+<h2>Instructions</h2>
+<ul>
+  <li>Perform a dynamic warmup and cool-down each session.</li>
+  <li>Progress weight/reps weekly if possible.</li>
+  <li>Superset exercises for maximal efficiency during lunch workouts.</li>
+  <li>Rest 60-90 seconds between sets.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+  <li>Swap exercises as needed based on equipment condition.</li>
+  <li>Prioritize compound lifts, especially if short on time.</li>
+  <li>Adjust for individual energy and recovery needs each week.</li>
+</ul>
+</div>
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn" id="Monday-btn" onclick="openTab('Monday')">Monday</button>
+    <button class="tab-btn" id="Tuesday-btn" onclick="openTab('Tuesday')">Tuesday</button>
+    <button class="tab-btn" id="Wednesday-btn" onclick="openTab('Wednesday')">Wednesday</button>
+    <button class="tab-btn" id="Thursday-btn" onclick="openTab('Thursday')">Thursday</button>
+    <button class="tab-btn" id="Friday-btn" onclick="openTab('Friday')">Friday</button>
+    <button class="tab-btn" id="Saturday-btn" onclick="openTab('Saturday')">Saturday</button>
+    <button class="tab-btn" id="Sunday-btn" onclick="openTab('Sunday')">Sunday</button>
 
+  </div>
+<div id="Monday" class="tab-content">
+  <h3>Monday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Monday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of KB Military Press">KB Military Press</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of KB Floor Press">KB Floor Press</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of KB Triceps Extensions">KB Triceps Extensions</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Tricep Pulldown (Cable)">Tricep Pulldown (Cable)</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Kettlebell Single-Arm Push Press">Kettlebell Single-Arm Push Press</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Push-Ups">Push-Ups</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Monday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Monday-cb" title="Set 3"></label>
+  </div>
+</div>
+</div>
+<div id="Tuesday" class="tab-content">
+  <h3>Tuesday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Tuesday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of KB Front Squat">KB Front Squat</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of KB Goblet Split Squat">KB Goblet Split Squat</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of KB Deadlift">KB Deadlift</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of KB Farmers Carry">KB Farmers Carry</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Plank on KB">Plank on KB</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Tuesday-cb" title="Set 3"></label>
+  </div>
+</div>
+</div>
+<div id="Wednesday" class="tab-content">
+  <h3>Wednesday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Wednesday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of Lat Pulldown">Lat Pulldown</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of Machine/KB Row">Machine/KB Row</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of KB Suitcase Deadlift">KB Suitcase Deadlift</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Face Pull (Pulley)">Face Pull (Pulley)</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Biceps Curl">Biceps Curl</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Wednesday-cb" title="Set 3"></label>
+  </div>
+</div>
+</div>
+<div id="Thursday" class="tab-content">
+  <h3>Thursday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Thursday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="5 sets of KB Swings (EMOM)">KB Swings (EMOM)</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 4"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 5"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Double KB Clean &amp; Press">Double KB Clean &amp; Press</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of KB Reverse Lunge to Clean">KB Reverse Lunge to Clean</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Turkish Get-Up">Turkish Get-Up</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of KB Carry/Walk">KB Carry/Walk</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Thursday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Thursday-cb" title="Set 3"></label>
+  </div>
+</div>
+</div>
+<div id="Friday" class="tab-content">
+  <h3>Friday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Friday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="1 sets of Rest/Light Mobility">Rest/Light Mobility</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Friday-cb" title="Set 1"></label>
+  </div>
+</div>
+</div>
+<div id="Saturday" class="tab-content">
+  <h3>Saturday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Saturday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Bodyweight Mobility Drills">Bodyweight Mobility Drills</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Saturday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Saturday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Saturday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="1 sets of Yoga/Stretching">Yoga/Stretching</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Saturday-cb" title="Set 1"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Light KB Complex">Light KB Complex</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Saturday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Saturday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Saturday-cb" title="Set 3"></label>
+  </div>
+</div>
+</div>
+<div id="Sunday" class="tab-content">
+  <h3>Sunday Workout</h3>
+  <button class="reset-btn" onclick="resetCheckboxes('Sunday')">Reset</button>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of KB Bulgarian Split Squat">KB Bulgarian Split Squat</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of Leg Curls/Press">Leg Curls/Press</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="4 sets of KB Sumo Deadlift">KB Sumo Deadlift</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 4"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Hanging Knee Raise">Hanging Knee Raise</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
+  </div>
+</div>
+<div class="exercise-row">
+  <div class="exercise-name" title="3 sets of Optional: Push-Ups/Ropes">Optional: Push-Ups/Ropes</div>
+  <div class="sets-grid">
+    <label><input type="checkbox" class="Sunday-cb" title="Set 1"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 2"></label>
+    <label><input type="checkbox" class="Sunday-cb" title="Set 3"></label>
+  </div>
+</div>
+</div>
+
+</div>
 </body>
 </html>
