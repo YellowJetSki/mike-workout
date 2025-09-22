@@ -4,6 +4,10 @@ const FILES_TO_CACHE = [
   './index.html',
   './manifest.json',
   './service-worker.js',
+  './styles.css',
+  './app.js',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
+  'https://fonts.googleapis.com/icon?family=Material+Icons',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
