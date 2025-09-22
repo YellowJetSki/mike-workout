@@ -534,8 +534,6 @@ textarea:focus {
   z-index: 1200;
   color: #66aaff;
   font-family: 'Inter', sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
   user-select: none;
   opacity: 1;
   transition: opacity 0.6s ease;
@@ -545,4 +543,14 @@ textarea:focus {
   opacity: 0;
   pointer-events: none;
 }
+
+#splash-screen h1 {
+  font-size: 2rem; /* smaller font size */
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  user-select: none;
+  font-weight: 700;
+}
+
 
