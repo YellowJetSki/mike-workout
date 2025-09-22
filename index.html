@@ -1,225 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Muscle Growth Workout Tracker - Dark Mode</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-</head>
-
-<body>
-  <div id="header-wrapper">
-   <section id="stopwatch" role="region" aria-label="Stopwatch timer controls">
-  <h2>Stopwatch</h2>
-  <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
-  <div class="button-row">
-    <button id="startStopBtn" aria-pressed="false" aria-label="Start or stop stopwatch">Start</button>
-    <button id="resetBtn" aria-label="Reset stopwatch">Reset</button>
-  </div>
-  <button id="showSummaryBtn" aria-label="Show workout summary" style="margin-top: 10px; background-color: #448aff; color: black; border: none; padding: 10px 24px; border-radius: 30px; font-weight: 700; cursor: pointer;">
-    Show Summary
-  </button>
-</section>
-    <nav id="dayTabs" role="tablist" aria-label="Workout Days">
-      <button id="tab-monday" role="tab" aria-controls="panel-monday" aria-selected="true" tabindex="0">
-        Monday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-      <button id="tab-tuesday" role="tab" aria-controls="panel-tuesday" aria-selected="false" tabindex="-1">
-        Tuesday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-      <button id="tab-wednesday" role="tab" aria-controls="panel-wednesday" aria-selected="false" tabindex="-1">
-        Wednesday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-      <button id="tab-thursday" role="tab" aria-controls="panel-thursday" aria-selected="false" tabindex="-1">
-        Thursday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-      <button id="tab-friday" role="tab" aria-controls="panel-friday" aria-selected="false" tabindex="-1">
-        Friday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-      <button id="tab-saturday" role="tab" aria-controls="panel-saturday" aria-selected="false" tabindex="-1">
-        Saturday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-      <button id="tab-sunday" role="tab" aria-controls="panel-sunday" aria-selected="false" tabindex="-1">
-        Sunday<span class="completion-indicator" aria-hidden="true"></span>
-      </button>
-    </nav>
-  </div>
-  <main> <button id="resetTrackingBtn" aria-label="Reset workout tracking" title="Reset workout tracking"> <span
-        class="material-icons">autorenew</span> </button>
-    <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday" tabindex="0">
-      <ul>
-        <li>
-          <strong>KB Military Press</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-        <li>
-          <strong>KB Floor Press</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-        <li>
-          <strong>KB Triceps Extensions</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-        <li>
-          <strong>Tricep Pulldown Cable</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-        <li>
-          <strong>Kettlebell Single-Arm Push Press</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-        <li>
-          <strong>Push-Ups</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="panel-tuesday" role="tabpanel" aria-labelledby="tab-tuesday" tabindex="0" hidden>
-      <ul>
-        <li>
-          <strong>KB Front Squat</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-        <li>
-          <strong>KB Goblet Split Squat</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="panel-wednesday" role="tabpanel" aria-labelledby="tab-wednesday" tabindex="0" hidden>
-      <ul>
-        <li>
-          <strong>Lat Pulldown</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="panel-thursday" role="tabpanel" aria-labelledby="tab-thursday" tabindex="0" hidden>
-      <ul>
-        <li>
-          <strong>KB Swings EMOM</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <label><input type="checkbox" /> Set 5</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="panel-friday" role="tabpanel" aria-labelledby="tab-friday" tabindex="0" hidden>
-      <ul>
-        <li>
-          <strong>Rest or Light Mobility</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="panel-saturday" role="tabpanel" aria-labelledby="tab-saturday" tabindex="0" hidden>
-      <ul>
-        <li>
-          <strong>Bodyweight Mobility Drills</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="panel-sunday" role="tabpanel" aria-labelledby="tab-sunday" tabindex="0" hidden>
-      <ul>
-        <li>
-          <strong>KB Bulgarian Split Squat</strong>
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <div class="exercise-notes-container">
-            <textarea placeholder="Add notes"></textarea>
-          </div>
-        </li>
-      </ul>
-    </section>
-  </main>
-  <div id="timerPanel" hidden>
-    <div id="timerDisplay" aria-live="polite" aria-atomic="true">Rest: 00:00</div>
-    <div id="timerControls"> <button id="startRestBtn" aria-label="Start rest timer">Start</button> <button
-        id="stopRestBtn" aria-label="Stop rest timer" disabled>Stop</button> <button id="resetRestBtn"
-        aria-label="Reset rest timer" disabled>Reset</button> </div>
-  </div>
-  <div id="workoutSummaryModal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Workout summary">
-    <div id="workoutSummaryContent">
-      <h2>Workout Summary</h2>
-      <ul></ul> <button id="closeSummaryBtn" aria-label="Close summary">Close</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Muscle Growth Workout Tracker - Dark Mode</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="header-wrapper">
+      <section
+        id="stopwatch"
+        role="region"
+        aria-label="Stopwatch timer controls"
+      >
+        <h2>Stopwatch</h2>
+        <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
+        <div class="button-row">
+          <button
+            id="startStopBtn"
+            aria-pressed="false"
+            aria-label="Start or stop stopwatch"
+          >
+            Start
+          </button>
+          <button id="resetBtn" aria-label="Reset stopwatch">Reset</button>
+        </div>
+        <button
+          id="showSummaryBtn"
+          aria-label="Show workout summary"
+          style="margin-top: 10px"
+        >
+          Show Summary
+        </button>
+      </section>
+      <nav id="dayTabs" role="tablist" aria-label="Workout Days">
+        <button
+          id="tab-monday"
+          role="tab"
+          aria-controls="panel-monday"
+          aria-selected="true"
+          tabindex="0"
+        >
+          Monday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+        <button
+          id="tab-tuesday"
+          role="tab"
+          aria-controls="panel-tuesday"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Tuesday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+        <button
+          id="tab-wednesday"
+          role="tab"
+          aria-controls="panel-wednesday"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Wednesday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+        <button
+          id="tab-thursday"
+          role="tab"
+          aria-controls="panel-thursday"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Thursday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+        <button
+          id="tab-friday"
+          role="tab"
+          aria-controls="panel-friday"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Friday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+        <button
+          id="tab-saturday"
+          role="tab"
+          aria-controls="panel-saturday"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Saturday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+        <button
+          id="tab-sunday"
+          role="tab"
+          aria-controls="panel-sunday"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Sunday<span class="completion-indicator" aria-hidden="true"></span>
+        </button>
+      </nav>
     </div>
-  </div>
-  <script src="app.js"></script>
-</body>
+    <main>
+      <button
+        id="resetTrackingBtn"
+        aria-label="Reset workout tracking"
+        title="Reset workout tracking"
+      >
+        <span class="material-icons">autorenew</span>
+      </button>
+      <section
+        id="panel-monday"
+        role="tabpanel"
+        aria-labelledby="tab-monday"
+        tabindex="0"
+      >
+        <ul>
+          <li>
+            <strong>KB Military Press</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <label><input type="checkbox" /> Set 4</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+          <li>
+            <strong>KB Floor Press</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <label><input type="checkbox" /> Set 4</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+          <li>
+            <strong>KB Triceps Extensions</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+          <li>
+            <strong>Tricep Pulldown Cable</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+          <li>
+            <strong>Kettlebell Single-Arm Push Press</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+          <li>
+            <strong>Push-Ups</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
 
+      <section
+        id="panel-tuesday"
+        role="tabpanel"
+        aria-labelledby="tab-tuesday"
+        tabindex="0"
+        hidden
+      >
+        <ul>
+          <li>
+            <strong>KB Front Squat</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <label><input type="checkbox" /> Set 4</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+          <li>
+            <strong>KB Goblet Split Squat</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section
+        id="panel-wednesday"
+        role="tabpanel"
+        aria-labelledby="tab-wednesday"
+        tabindex="0"
+        hidden
+      >
+        <ul>
+          <li>
+            <strong>Lat Pulldown</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <label><input type="checkbox" /> Set 4</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section
+        id="panel-thursday"
+        role="tabpanel"
+        aria-labelledby="tab-thursday"
+        tabindex="0"
+        hidden
+      >
+        <ul>
+          <li>
+            <strong>KB Swings EMOM</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <label><input type="checkbox" /> Set 4</label>
+            <label><input type="checkbox" /> Set 5</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes (weight, form, etc.)"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section
+        id="panel-friday"
+        role="tabpanel"
+        aria-labelledby="tab-friday"
+        tabindex="0"
+        hidden
+      >
+        <ul>
+          <li>
+            <strong>Rest or Light Mobility</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section
+        id="panel-saturday"
+        role="tabpanel"
+        aria-labelledby="tab-saturday"
+        tabindex="0"
+        hidden
+      >
+        <ul>
+          <li>
+            <strong>Bodyweight Mobility Drills</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section
+        id="panel-sunday"
+        role="tabpanel"
+        aria-labelledby="tab-sunday"
+        tabindex="0"
+        hidden
+      >
+        <ul>
+          <li>
+            <strong>KB Bulgarian Split Squat</strong>
+            <label><input type="checkbox" /> Set 1</label>
+            <label><input type="checkbox" /> Set 2</label>
+            <label><input type="checkbox" /> Set 3</label>
+            <label><input type="checkbox" /> Set 4</label>
+            <div class="exercise-notes-container">
+              <textarea placeholder="Add notes"></textarea>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <div id="timerPanel" hidden>
+      <div id="timerDisplay" aria-live="polite" aria-atomic="true">
+        Rest: 00:00
+      </div>
+      <div id="timerControls">
+        <button id="startRestBtn" aria-label="Start rest timer">Start</button>
+        <button id="stopRestBtn" aria-label="Stop rest timer" disabled>
+          Stop
+        </button>
+        <button id="resetRestBtn" aria-label="Reset rest timer" disabled>
+          Reset
+        </button>
+      </div>
+    </div>
+    <div
+      id="workoutSummaryModal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-label="Workout summary"
+      tabindex="-1"
+    >
+      <div id="workoutSummaryContent">
+        <h2>Workout Summary</h2>
+        <ul></ul>
+        <button id="closeSummaryBtn" aria-label="Close summary">Close</button>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
 </html>
