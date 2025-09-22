@@ -1,24 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-/* Root variables for dark mode with blue tones */
 :root {
   --primary: #448aff;
-  --primary-light: #82b1ff;
+  --primary-light: #82bfff;
   --primary-dark: #0057b7;
-  --secondary: #82b1ff;
-  --background: #000000;
+  --background: #000;
   --surface: #121212;
-  --text-primary: #e1e8ff;
-  --text-secondary: #81aaff;
+  --text-primary: #e1eaff;
+  --text-secondary: #82bfff;
   --border-radius: 12px;
-  --shadow-light: 0 4px 6px rgba(34, 48, 77, 0.8);
-  --shadow-strong: 0 10px 20px rgba(34, 48, 77, 0.95);
-  --font-family: 'Roboto', sans-serif;
+  --shadow-light: 0 4px 6px rgba(34,48,77,0.8);
+  --shadow-strong: 0 10px 20px rgba(34,48,77,0.95);
+  --font: 'Roboto', sans-serif;
   --transition: 0.3s ease;
 }
 
-/* Global resets */
 *,
 *::before,
 *::after {
@@ -27,18 +24,15 @@
 
 body {
   margin: 0;
-  font-family: var(--font-family);
-  background-color: var(--background);
+  background: var(--background);
   color: var(--text-primary);
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
-  line-height: 1.5;
-  -webkit-tap-highlight-color: transparent;
 }
 
-/* Typography */
-h2, h3 {
+h2,h3 {
   margin: 0;
   font-weight: 500;
   line-height: 1.3;
@@ -51,77 +45,77 @@ h2 {
 }
 
 h3 {
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   margin-bottom: 1rem;
   color: var(--text-primary);
 }
 
-/* Header */
 #header-wrapper {
   position: sticky;
   top: 0;
   background: var(--surface);
   box-shadow: var(--shadow-light);
+  padding: 16px 24px 12px;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
   z-index: 100;
-  padding: 0.8rem 1.2rem 0.4rem;
-  border-bottom-left-radius: var(--border-radius);
-  border-bottom-right-radius: var(--border-radius);
 }
 
-/* Stopwatch */
 #stopwatch {
-  background-color: var(--surface);
+  background: var(--surface);
   border-radius: var(--border-radius);
-  padding: 1.2rem 1.5rem;
+  padding: 24px;
   box-shadow: var(--shadow-strong);
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 12px;
   user-select: none;
-  margin-bottom: 1rem;
 }
 
 #timer {
-  font-variant: tabular-nums;
+  font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 2.5rem;
-  letter-spacing: 0.12em;
   color: var(--primary);
-  margin-bottom: 1.1rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 20px;
 }
 
-#stopwatch > div > button {
-  background-color: var(--primary);
-  color: var(--background);
-  border: none;
-  border-radius: 28px;
-  padding: 0.65rem 2.5rem;
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.button-row button {
+  min-width: 130px;
   font-weight: 700;
   font-size: 1.1rem;
-  cursor: pointer;
-  margin: 6px;
+  padding: 12px 28px;
+  background: var(--primary);
+  color: var(--background);
+  border: none;
+  border-radius: 30px;
   box-shadow: var(--shadow-light);
-  transition: background-color var(--transition), box-shadow var(--transition);
-  min-width: 120px;
-  user-select: none;
+  cursor: pointer;
+  transition: background-color var(--transition);
 }
 
-#stopwatch > div > button:hover,
-#stopwatch > div > button:focus-visible {
-  background-color: var(--primary-dark);
-  box-shadow: var(--shadow-strong);
+.button-row button:hover,
+.button-row button:focus-visible {
+  background: var(--primary-dark);
   outline: none;
 }
 
-/* Tabs */
 #dayTabs {
   display: flex;
   overflow-x: auto;
-  padding: 0 0.6rem;
-  margin-bottom: 1.4rem;
+  padding: 0 8px;
+  margin-bottom: 24px;
   border-bottom: 3px solid var(--primary-light);
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 #dayTabs::-webkit-scrollbar {
@@ -135,103 +129,74 @@ h3 {
   border-bottom: 3px solid transparent;
   color: var(--text-secondary);
   font-weight: 600;
-  padding: 0.9rem 1.6rem;
-  margin-right: 0.5rem;
+  font-size: 1rem;
+  padding: 14px 24px;
+  margin-right: 8px;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   cursor: pointer;
-  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   transition: all var(--transition);
-  white-space: nowrap;
   user-select: none;
+  white-space: nowrap;
 }
 
 #dayTabs button[aria-selected="true"] {
   color: var(--primary);
   border-bottom-color: var(--primary);
-  background-color: #001e44;
-  font-weight: 700;
+  background-color: #001933;
   box-shadow: 0 4px 10px rgba(68,134,255,0.7);
   pointer-events: none;
+  font-weight: 700;
 }
 
-#dayTabs button:hover:not([aria-selected="true"]),
-#dayTabs button:focus-visible:not([aria-selected="true"]) {
+#dayTabs button:hover,
+#dayTabs button:focus-visible {
+  background-color: #002766;
   color: var(--primary-light);
-  background-color: #002c66;
-  box-shadow: 0 2px 8px rgba(68,134,255,0.55);
   outline: none;
+  box-shadow: 0 2px 7px rgba(68,134,255,0.55);
 }
 
-/* Main */
 main {
-  background-color: var(--surface);
+  background: var(--surface);
   border-radius: var(--border-radius);
-  padding: 1.5rem 2rem;
+  padding: 24px 32px;
   box-shadow: var(--shadow-light);
   min-height: 400px;
+  position: relative;
   user-select: none;
-  margin-bottom: 100px;
+  margin-bottom: 110px;
   color: var(--text-primary);
 }
 
-/* Reset Button */
-#resetTrackingBtn {
-  position: fixed;
-  bottom: 28px;
-  right: 22px;
-  background-color: var(--primary);
-  color: var(--background);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 34px;
-  box-shadow: var(--shadow-strong);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  user-select: none;
-  transition: background-color var(--transition);
-}
-
-#resetTrackingBtn:hover,
-#resetTrackingBtn:focus-visible {
-  background-color: var(--primary-dark);
-  outline: none;
-}
-
-/* Lists */
 ul {
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 li {
   font-size: 1.2rem;
-  padding: 0.9rem 0;
-  border-bottom: 2px solid #182454;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #182953;
+  padding-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  color: var(--text-primary);
+  gap: 16px;
 }
 
-/* Checkboxes */
 li label {
   display: flex;
   align-items: center;
   cursor: pointer;
   user-select: none;
+  gap: 10px;
   color: var(--primary-light);
   font-weight: 600;
-  gap: 0.5rem;
 }
 
-li input[type="checkbox"] {
+input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 24px;
@@ -240,83 +205,119 @@ li input[type="checkbox"] {
   border-radius: 6px;
   background-clip: content-box;
   background-color: var(--surface);
-  cursor: pointer;
   position: relative;
+  cursor: pointer;
   display: inline-flex;
-  align-items: center;
   justify-content: center;
-  transition: background-color var(--transition), border-color var(--transition);
+  align-items: center;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-li input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0;
-  transition: opacity var(--transition);
+input[type="checkbox"]:focus-visible {
+  outline: 3px solid var(--primary-light);
+  outline-offset: 3px;
 }
 
-li input[type="checkbox"]:checked {
+input[type="checkbox"]:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-li input[type="checkbox"]:checked::before {
-  opacity: 1;
-  background-image: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.285 6.709c-.39-.39-1.022-.39-1.414 0L9 16.59 5.13 12.72a1 1 0 00-1.414 1.415l4.59 4.59a1 1 0 001.414 0l10.565-10.616c.34-.39.34-1.022 0-1.415z"/></svg>');
+input[type="checkbox"]:checked::after {
+  content: '✔';
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0; left: 0;
 }
 
-/* Exercise descriptions alignment */
-li span {
+.exercise-description {
   flex: 1;
   color: var(--text-secondary);
+  font-weight: 400;
 }
 
-/* Notes */
 .exercise-notes-container {
-  margin-top: 0.5rem;
   width: 100%;
+  margin-top: 6px;
 }
 
 .exercise-notes-container textarea {
   width: 100%;
   min-height: 48px;
-  background-color: #182547;
-  border: 1.5px solid var(--primary);
-  border-radius: 10px;
+  background: #182953;
+  border: 2px solid var(--primary);
+  border-radius: 14px;
   color: var(--text-primary);
-  padding: 0.5rem 0.75rem;
-  font-family: var(--font-family);
+  padding: 10px 14px;
+  font-family: var(--font);
   font-size: 1rem;
   resize: vertical;
-  transition: border-color var(--transition);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .exercise-notes-container textarea:focus {
   border-color: var(--primary-light);
+  box-shadow: 0 0 10px var(--primary-light);
   outline: none;
-  box-shadow: 0 0 8px var(--primary-light);
 }
 
-/* Progress indicator text */
-.progress-indicator {
-  font-size: 0.9rem;
-  color: var(--primary-light);
+#timerPanel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--surface);
+  border-top: 1px solid #29407b;
+  box-shadow: 0 -4px 12px rgba(68,134,255, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  font-family: var(--font);
+  z-index: 150;
+  color: var(--primary);
+}
+
+#timerDisplay {
   font-weight: 700;
-  margin-top: 0.3rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.8rem;
+}
+
+#timerControls button {
+  background-color: var(--primary);
+  color: var(--surface);
+  border: none;
+  border-radius: 30px;
+  padding: 10px 25px;
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 16px;
+  box-shadow: var(--shadow-light);
+  transition: background-color 0.3s ease;
   user-select: none;
 }
 
-/* Checkbox focus highlight */
-input[type="checkbox"]:focus-visible + label,
-input[type="checkbox"]:focus + label {
-  outline: 3px solid var(--secondary);
-  outline-offset: 3px;
-  box-shadow: 0 0 16px var(--secondary);
+#timerControls button:disabled {
+  background-color: #4466a1;
+  cursor: not-allowed;
+}
+
+#timerControls button:hover:not(:disabled),
+#timerControls button:focus-visible:not(:disabled) {
+  background-color: var(--primary-dark);
+  outline: none;
 }
 
 /* Modal */
@@ -328,7 +329,7 @@ input[type="checkbox"]:focus + label {
   justify-content: center;
   align-items: center;
   z-index: 300;
-  padding: 1rem;
+  padding: 16px;
   overflow-y: auto;
 }
 
@@ -336,78 +337,80 @@ input[type="checkbox"]:focus + label {
   display: flex;
 }
 
-#workoutSummaryModal > div {
+#workoutSummaryContent {
   background-color: var(--surface);
   border-radius: var(--border-radius);
-  padding: 2rem 2.5rem;
   max-width: 480px;
   width: 95%;
-  color: var(--text-primary);
+  padding: 32px 40px;
   box-shadow: 0 0 20px var(--primary);
-  font-family: var(--font-family);
+  color: var(--text-primary);
+  font-family: var(--font);
   text-align: center;
+  outline: none;
 }
 
-#workoutSummaryModal h2 {
-  margin: 0 0 1.25rem 0;
+#workoutSummaryContent h2 {
+  margin: 0 0 20px 0;
   font-weight: 800;
-  font-size: 1.8rem;
-  color: var(--primary-light);
+  font-size: 2rem;
   letter-spacing: 0.07em;
+  color: var(--primary-light);
 }
 
-#workoutSummaryModal ul {
+#workoutSummaryContent ul {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  list-style-position: inside;
   max-height: 280px;
   overflow-y: auto;
-  margin: 0 0 1.5rem 0;
-  padding-left: 1.5rem;
-  font-size: 1.05rem;
-  user-select: text;
-  color: var(--text-secondary);
+  padding-left: 24px;
+  margin: 0 auto 24px;
   text-align: left;
+  width: 90%;
 }
 
-#workoutSummaryModal button.closeSummary {
-  background-color: var(--primary);
-  border: none;
+#workoutSummaryContent button {
+  cursor: pointer;
   border-radius: 30px;
-  padding: 0.8rem 2.5rem;
+  font-family: var(--font);
   font-weight: 700;
   font-size: 1.1rem;
+  padding: 16px 40px;
+  border: none;
   color: var(--surface);
-  cursor: pointer;
-  transition: background-color var(--transition);
-  outline-offset: 5px;
+  background-color: var(--primary);
+  transition: background-color 0.3s ease;
+  user-select: none;
 }
 
-#workoutSummaryModal button.closeSummary:hover,
-#workoutSummaryModal button.closeSummary:focus-visible {
+#workoutSummaryContent button:hover,
+#workoutSummaryContent button:focus-visible {
   background-color: var(--primary-dark);
   outline: none;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
   main {
-    padding: 1rem 1.2rem;
+    padding: 20px;
   }
 
-  #dayTabs button {
-    font-size: 0.88rem;
-    padding: 0.8rem 1rem;
-    margin-right: 0.4rem;
+  .button-row button {
+    min-width: 100%;
   }
 
-  #stopwatch > div > button {
-    min-width: 140px;
+  #timerPanel {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  #timer {
-    font-size: 1.9rem;
+  #timerControls button {
+    width: 100%;
+    margin: 8px 0 0 0;
   }
 
-  /* Notes textarea font size */
-  .exercise-notes-container textarea {
-    font-size: 0.9rem;
+  #workoutSummaryContent {
+    padding: 20px;
   }
 }
