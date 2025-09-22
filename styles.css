@@ -7,7 +7,7 @@
   --primary-dark: #0057b7;
   --background: #000;
   --surface: #121212;
-  --text-primary: #e1eaff;
+  --text-primary: #e0e6ff;
   --text-secondary: #82bfff;
   --border-radius: 12px;
   --shadow-light: 0 4px 6px rgba(34,48,77,0.8);
@@ -33,7 +33,7 @@ body, html {
   overflow-x: hidden;
 }
 
-h2, h3 {
+h2,h3 {
   margin: 0;
   font-weight: 500;
   line-height: 1.3;
@@ -75,7 +75,7 @@ h3 {
 }
 
 #timer {
-  font-variant-numeric: tabular-nums;
+  font-variant: tabular-nums;
   font-weight: 700;
   font-size: 2.5rem;
   color: var(--primary);
@@ -119,7 +119,6 @@ h3 {
   border-bottom: 3px solid var(--primary-light);
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
-  scrollbar-width: none;
 }
 
 #dayTabs::-webkit-scrollbar {
@@ -164,14 +163,18 @@ h3 {
 main {
   background: var(--surface);
   border-radius: var(--border-radius);
-  padding: 24px 32px;
-  box-shadow: var(--shadow-light);
-  min-height: 400px;
+  padding: 24px 24px 100px 24px;
+  box-shadow: var(--shadow-strong);
+  min-height: 450px;
   position: relative;
   user-select: none;
-  margin-bottom: 110px;
+  overflow-y: auto;
   color: var(--text-primary);
-  overflow-x: hidden;
+}
+
+/* Prevent content behind fixed footer */
+main::-webkit-scrollbar {
+  height: 12px;
 }
 
 ul {
@@ -182,13 +185,18 @@ ul {
 
 li {
   font-size: 1.2rem;
-  margin-bottom: 16px;
-  border-bottom: 2px solid #182953;
-  padding-bottom: 12px;
+  margin-bottom: 22px;
+  border-bottom: 1.5px solid #182953;
+  padding-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+  position: relative;
+}
+
+li > strong {
+  flex: 1 0 auto;
 }
 
 li label {
@@ -197,12 +205,11 @@ li label {
   cursor: pointer;
   user-select: none;
   gap: 10px;
-  color: var(--primary-light);
   font-weight: 600;
+  color: var(--primary-light);
 }
 
-/* Checkbox alignment fix */
-input[type="checkbox"] {
+input[type=checkbox] {
   appearance: none;
   -webkit-appearance: none;
   width: 28px;
@@ -218,41 +225,43 @@ input[type="checkbox"] {
   align-items: center;
   vertical-align: middle;
   margin: 0;
-  padding: 0;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-input[type="checkbox"]:focus-visible {
+input[type=checkbox]:focus-visible {
   outline: 3px solid var(--primary-light);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
-input[type="checkbox"]:checked {
+input[type=checkbox]:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-input[type="checkbox"]::after {
+input[type=checkbox]::after {
   content: '';
   position: absolute;
   width: 12px;
-  height: 16px;
+  height: 18px;
   border: solid white;
   border-width: 0 3px 3px 0;
   display: none;
   transform: rotate(45deg);
-  top: 5px;
-  left: 8px;
+  top: 4px;
+  left: 6px;
 }
 
-input[type="checkbox"]:checked::after {
+input[type=checkbox]:checked::after {
   display: block;
 }
 
+.exercise-description {
+  flex: 1 1 auto;
+  color: var(--text-secondary);
+}
+
 .exercise-notes-container {
-  width: 100%;
-  margin-top: 6px;
   flex-basis: 100%;
+  margin-top: 6px;
 }
 
 .exercise-notes-container textarea {
@@ -275,6 +284,16 @@ input[type="checkbox"]:checked::after {
   outline: none;
 }
 
+/* Progress indicator */
+.progress-indicator {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  margin-left: auto;
+  white-space: nowrap;
+  user-select: none;
+}
+
 #timerPanel {
   position: fixed;
   bottom: 0;
@@ -282,7 +301,7 @@ input[type="checkbox"]:checked::after {
   width: 100%;
   background: var(--surface);
   border-top: 1px solid #29407b;
-  box-shadow: 0 -4px 12px rgba(68,134,255, 0.65);
+  box-shadow: 0 0 15px rgba(68,134,255,0.65);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -292,35 +311,43 @@ input[type="checkbox"]:checked::after {
   color: var(--primary);
 }
 
-#timerDisplay {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  font-size: 1.8rem;
+#timerPanel > * {
+  flex: 0 1 auto;
 }
 
-#timerControls button {
+#timerPanel > div {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+#timerPanel button {
+  flex: 0 1 auto;
+  margin-left: 10px;
   background-color: var(--primary);
-  color: var(--surface);
+  color: var(--background);
   border: none;
   border-radius: 30px;
-  padding: 10px 25px;
-  cursor: pointer;
+  padding: 12px 24px;
   font-weight: 700;
-  margin-left: 16px;
-  box-shadow: var(--shadow-light);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(68,138,255,0.9);
   transition: background-color 0.3s ease;
   user-select: none;
 }
 
-#timerControls button:disabled {
+#timerPanel button:disabled {
   background-color: #4466a1;
   cursor: not-allowed;
 }
 
-#timerControls button:hover:not(:disabled),
-#timerControls button:focus-visible:not(:disabled) {
+#timerPanel button:hover:not(:disabled),
+#timerPanel button:focus-visible:not(:disabled) {
   background-color: var(--primary-dark);
   outline: none;
+}
+
+#timerPanel button:focus-visible {
+  outline-offset: 3px;
 }
 
 /* Modal */
@@ -340,7 +367,7 @@ input[type="checkbox"]:checked::after {
   display: flex;
 }
 
-#workoutSummaryContent {
+#workoutSummaryModal > div {
   background-color: var(--surface);
   border-radius: var(--border-radius);
   max-width: 480px;
@@ -353,7 +380,7 @@ input[type="checkbox"]:checked::after {
   outline: none;
 }
 
-#workoutSummaryContent h2 {
+#workoutSummaryModal h2 {
   margin: 0 0 20px 0;
   font-weight: 800;
   font-size: 2rem;
@@ -361,20 +388,19 @@ input[type="checkbox"]:checked::after {
   color: var(--primary-light);
 }
 
-#workoutSummaryContent ul {
+#workoutSummaryModal ul {
   color: var(--text-secondary);
   font-size: 1.05rem;
   line-height: 1.6;
-  list-style-position: inside;
+  list-style: inside disc;
   max-height: 280px;
   overflow-y: auto;
   padding-left: 24px;
-  margin: 0 auto 24px;
+  margin: 0 0 24px 0;
   text-align: left;
-  width: 90%;
 }
 
-#workoutSummaryContent button {
+#workoutSummaryModal button {
   cursor: pointer;
   border-radius: 30px;
   font-family: var(--font);
@@ -382,21 +408,21 @@ input[type="checkbox"]:checked::after {
   font-size: 1.1rem;
   padding: 16px 40px;
   border: none;
-  color: var(--surface);
+  color: var(--background);
   background-color: var(--primary);
   transition: background-color 0.3s ease;
   user-select: none;
 }
 
-#workoutSummaryContent button:hover,
-#workoutSummaryContent button:focus-visible {
+#workoutSummaryModal button:hover,
+#workoutSummaryModal button:focus-visible {
   background-color: var(--primary-dark);
   outline: none;
 }
 
 @media (max-width: 480px) {
   main {
-    padding: 20px 16px;
+    padding: 20px 20px 120px;
   }
 
   .button-row button {
@@ -406,14 +432,15 @@ input[type="checkbox"]:checked::after {
   #timerPanel {
     flex-direction: column;
     align-items: stretch;
+    padding: 16px 20px;
   }
 
-  #timerControls button {
-    width: 100%;
+  #timerPanel button {
     margin: 8px 0 0 0;
+    width: 100%;
   }
 
-  #workoutSummaryContent {
+  #workoutSummaryModal > div {
     padding: 20px;
   }
 }

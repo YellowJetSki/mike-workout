@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getOttawaDayIndex() {
     try {
-      const ottawa = new Date().toLocaleString("en-US", { timeZone: "America/Toronto" });
-      return new Date(ottawa).getDay();
+      const ottawaDate = new Date().toLocaleString("en-US", { timeZone: "America/Toronto" });
+      return new Date(ottawaDate).getDay();
     } catch {
       return new Date().getDay();
     }
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function activateTab(day) {
     tabs.forEach(tab => {
-      const selected = tab.id === `tab-${day}`;
+      const selected = (tab.id === `tab-${day}`);
       tab.setAttribute("aria-selected", selected);
       tab.tabIndex = selected ? 0 : -1;
     });
@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         panel.setAttribute("tabindex", -1);
       }
     });
+    updateProgressIndicators();
   }
 
   function loadProgress() {
@@ -84,12 +85,30 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(`tracking-${day}`, JSON.stringify({ states, notes }));
   }
 
+  function updateProgressIndicators() {
+    panels.forEach(panel => {
+      panel.querySelectorAll("li").forEach(li => {
+        const checkboxes = li.querySelectorAll("input[type='checkbox']");
+        let completedSets = 0;
+        checkboxes.forEach(cb => { if(cb.checked) completedSets++; });
+        let indicator = li.querySelector(".progress-indicator");
+        if (!indicator) {
+          indicator = document.createElement("span");
+          indicator.className = "progress-indicator";
+          li.appendChild(indicator);
+        }
+        indicator.textContent = `${completedSets}/${checkboxes.length} Sets Completed`;
+      });
+    });
+  }
+
   function setupAutoAdvance() {
     panels.forEach(panel => {
       panel.addEventListener('change', e => {
         if (e.target.type === 'checkbox') {
           const day = panel.id.replace('panel-', '');
           saveProgress(day);
+          updateProgressIndicators();
           if (e.target.checked) {
             const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
             const idx = checkboxes.indexOf(e.target);
@@ -146,6 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       textareas.forEach(ta => ta.value = '');
       localStorage.removeItem(`tracking-${panel.id.replace('panel-', '')}`);
     });
+    updateProgressIndicators();
   });
 
   startRestBtn.addEventListener('click', () => {
@@ -194,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateRestTimer() {
     const mins = Math.floor(restSecondsLeft / 60);
     const secs = restSecondsLeft % 60;
-    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
   }
 
   workoutSummaryModal.querySelector('button').addEventListener('click', () => {
@@ -206,29 +226,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const list = workoutSummaryModal.querySelector('ul');
     list.innerHTML = '';
     let totalSets = 0, totalDone = 0;
+    let totalExercises = 0, completedExercises = 0;
 
     panels.forEach(panel => {
       const day = panel.id.replace('panel-', '');
-      const boxes = panel.querySelectorAll('input[type="checkbox"]');
-      const done = Array.from(boxes).filter(cb => cb.checked).length;
-      if (done === 0) return;
-      totalSets += boxes.length;
-      totalDone += done;
-      const li = document.createElement('li');
-      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: completed ${done} of ${boxes.length} sets`;
+      const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+      const exercises = panel.querySelectorAll('li');
+      totalExercises += exercises.length;
+
+      let dayDone = Array.from(checkboxes).filter(cb => cb.checked).length;
+      totalSets += checkboxes.length;
+      totalDone += dayDone;
+
+      let dayCompletedExercises = Array.from(exercises).filter(li => {
+        const sets = li.querySelectorAll('input[type="checkbox"]');
+        return Array.from(sets).every(cb => cb.checked);
+      }).length;
+
+      completedExercises += dayCompletedExercises;
+
+      if(dayDone === 0) return;
+
+      const li = document.createElement("li");
+      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: ${dayDone} of ${checkboxes.length} sets completed`;
       list.appendChild(li);
     });
 
-    const totalLi = document.createElement('li');
-    totalLi.textContent = `Total: completed ${totalDone} of ${totalSets} sets`;
-    list.appendChild(totalLi);
+    const totalSetsLi = document.createElement("li");
+    totalSetsLi.textContent = `Total Sets Completed: ${totalDone} of ${totalSets}`;
+    list.appendChild(totalSetsLi);
 
-    const timeLi = document.createElement('li');
-    timeLi.textContent = `Elapsed time: ${formatTime(elapsedSeconds)}`;
-    list.appendChild(timeLi);
+    const completedExercisesLi = document.createElement("li");
+    completedExercisesLi.textContent = `Exercises Fully Completed: ${completedExercises} of ${totalExercises}`;
+    list.appendChild(completedExercisesLi);
 
-    workoutSummaryModal.style.display = 'flex';
-    workoutSummaryModal.setAttribute('aria-hidden', 'false');
+    workoutSummaryModal.style.display = "flex";
+    workoutSummaryModal.setAttribute("aria-hidden", "false");
     workoutSummaryModal.focus();
   }
 
@@ -250,17 +283,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setUpTabs() {
-    tabs.forEach((tab, index) => {
+    tabs.forEach((tab, idx) => {
       tab.addEventListener('click', () => {
         activateTab(tab.id.replace('tab-', ''));
       });
       tab.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') {
-          let next = (index + 1) % tabs.length;
-          tabs[next].focus();
+          tabs[(idx + 1) % tabs.length].focus();
         } else if (e.key === 'ArrowLeft') {
-          let prev = (index - 1 + tabs.length) % tabs.length;
-          tabs[prev].focus();
+          tabs[(idx - 1 + tabs.length) % tabs.length].focus();
         } else if (e.key === 'Enter' || e.key === ' ') {
           activateTab(tab.id.replace('tab-', ''));
         }
@@ -268,29 +299,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function setupAutoAdvance() {
-    panels.forEach(panel => {
-      panel.addEventListener('change', (e) => {
-        if (e.target.type === 'checkbox') {
-          const day = panel.id.replace('panel-', '');
-          saveProgress(day);
-          if (e.target.checked) {
-            const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
-            const idx = checkboxes.indexOf(e.target);
-            if (idx !== -1 && idx + 1 < checkboxes.length) {
-              checkboxes[idx + 1].focus();
-            }
-          }
-        }
-      });
-    });
-  }
-
-  addSummaryButton();
   setUpTabs();
   setupAutoAdvance();
-
+  addSummaryButton();
   activateTab(dayMap[getOttawaDayIndex()]);
   loadProgress();
-
 });
