@@ -3,19 +3,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const panels = document.querySelectorAll('[role="tabpanel"]');
   const resetTrackingBtn = document.getElementById("resetTrackingBtn");
 
-  // Stopwatch elements
   const timerDisplay = document.getElementById("timer");
   const startStopBtn = document.getElementById("startStopBtn");
   const resetBtn = document.getElementById("resetBtn");
 
-  // Rest timer elements
   const timerPanel = document.getElementById("timerPanel");
   const timerDisplayRest = document.getElementById("timerDisplay");
   const startRestBtn = document.getElementById("startRestBtn");
   const stopRestBtn = document.getElementById("stopRestBtn");
   const resetRestBtn = document.getElementById("resetRestBtn");
 
-  // Workout summary modal elements
   const workoutSummaryModal = document.getElementById("workoutSummaryModal");
   const workoutSummaryList = workoutSummaryModal.querySelector("ul");
   const closeSummaryBtn = document.getElementById("closeSummaryBtn");
@@ -32,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getOttawaDayIndex() {
     try {
-      const ottawaDate = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Toronto"}));
-      return ottawaDate.getDay();
+      const ottawa = new Date().toLocaleString("en-US", { timeZone: "America/Toronto" });
+      return new Date(ottawa).getDay();
     } catch {
       return new Date().getDay();
     }
@@ -41,17 +38,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function activateTab(day) {
     tabs.forEach(tab => {
-      const selected = (tab.id === `tab-${day}`);
+      const selected = tab.id === `tab-${day}`;
       tab.setAttribute("aria-selected", selected);
       tab.tabIndex = selected ? 0 : -1;
     });
+
     panels.forEach(panel => {
-      if(panel.id === `panel-${day}`) {
-        panel.hidden = false;
-        panel.setAttribute("tabindex", "0");
+      if (panel.id === `panel-${day}`) {
+        panel.removeAttribute('hidden');
+        panel.setAttribute("tabindex", 0);
       } else {
-        panel.hidden = true;
-        panel.setAttribute("tabindex", "-1");
+        panel.setAttribute('hidden', '');
+        panel.setAttribute("tabindex", -1);
       }
     });
   }
@@ -60,58 +58,42 @@ document.addEventListener("DOMContentLoaded", () => {
     panels.forEach(panel => {
       const day = panel.id.replace("panel-", "");
       const saved = localStorage.getItem(`tracking-${day}`);
-      if(saved) {
+      if (saved) {
         try {
           const data = JSON.parse(saved);
-          if(data.states) {
-            let checkboxes = panel.querySelectorAll("input[type=checkbox]");
-            data.states.forEach((v, i) => {
-              if(checkboxes[i]) checkboxes[i].checked = v;
-            });
-          }
-          if(data.notes) {
-            let notes = panel.querySelectorAll("textarea");
-            data.notes.forEach((text, i) => {
-              if(notes[i]) notes[i].value = text;
-            });
-          }
-        } catch{}
+          const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+          data.states?.forEach((v, i) => {
+            if (checkboxes[i]) checkboxes[i].checked = v;
+          });
+          const textareas = panel.querySelectorAll('textarea');
+          data.notes?.forEach((txt, i) => {
+            if (textareas[i]) textareas[i].value = txt;
+          });
+        } catch { }
       }
     });
   }
 
   function saveProgress(day) {
     const panel = document.getElementById(`panel-${day}`);
-    if(!panel) return;
-    let checkboxes = panel.querySelectorAll("input[type=checkbox]");
-    let states = Array.from(checkboxes).map(box => box.checked);
-    let notesFields = panel.querySelectorAll("textarea");
-    let notes = Array.from(notesFields).map(textarea => textarea.value);
-    localStorage.setItem(`tracking-${day}`, JSON.stringify({states, notes}));
+    if (!panel) return;
+    const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+    const states = Array.from(checkboxes).map(cb => cb.checked);
+    const textareas = panel.querySelectorAll('textarea');
+    const notes = Array.from(textareas).map(ta => ta.value);
+    localStorage.setItem(`tracking-${day}`, JSON.stringify({ states, notes }));
   }
 
-  function addNotesFields(){
+  function setupAutoAdvance() {
     panels.forEach(panel => {
-      let exercises = panel.querySelectorAll("li");
-      exercises.forEach(li => {
-        if(!li.querySelector(".exercise-notes-container textarea")){
-          // Notes are already included in HTML, this function can be empty or skip
-        }
-      });
-    });
-  }
-
-  function setupAutoAdvance(){
-    panels.forEach(panel => {
-      panel.addEventListener("change", e => {
-        if((e.target).type === "checkbox") {
-          const day = panel.id.replace("panel-", "");
+      panel.addEventListener('change', e => {
+        if (e.target.type === 'checkbox') {
+          const day = panel.id.replace('panel-', '');
           saveProgress(day);
-
-          if(e.target.checked){
-            let checkboxes = Array.from(panel.querySelectorAll("input[type=checkbox]"));
-            let idx = checkboxes.indexOf(e.target);
-            if(idx !== -1 && idx + 1 < checkboxes.length){
+          if (e.target.checked) {
+            const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
+            const idx = checkboxes.indexOf(e.target);
+            if (idx !== -1 && idx + 1 < checkboxes.length) {
               checkboxes[idx + 1].focus();
             }
           }
@@ -120,95 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function updateRestTimer() {
-    const mins = Math.floor(restSecondsLeft / 60);
-    const secs = restSecondsLeft % 60;
-    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-  }
-
-  function startRest(){
-    if(restRunning) return;
-    restSecondsLeft = 60; 
-    restRunning = true;
-    updateRestTimer();
-    startRestBtn.disabled = true;
-    stopRestBtn.disabled = false;
-    resetRestBtn.disabled = false;
-
-    restTimerInterval = setInterval(() => {
-      restSecondsLeft--;
-      updateRestTimer();
-      if (restSecondsLeft <= 0) {
-        clearInterval(restTimerInterval);
-        restRunning = false;
-        startRestBtn.disabled = false;
-        stopRestBtn.disabled = true;
-        alert("Rest time's up!");
-      }
-    }, 1000);
-  }
-
-  function stopRest(){
-    if(!restRunning) return;
-    clearInterval(restTimerInterval);
-    restRunning = false;
-    startRestBtn.disabled = false;
-    stopRestBtn.disabled = true;
-  }
-
-  function resetRest(){
-    clearInterval(restTimerInterval);
-    restSecondsLeft = 0;
-    updateRestTimer();
-    restRunning = false;
-    startRestBtn.disabled = false;
-    stopRestBtn.disabled = true;
-    resetRestBtn.disabled = true;
-  }
-
-  function showSummary() {
-    workoutSummaryList.innerHTML = "";
-    let totalSets = 0, totalCompleted = 0;
-
-    panels.forEach(panel => {
-      const day = panel.id.replace('panel-', '');
-      const checkboxes = panel.querySelectorAll('input[type=checkbox]');
-      let completed = 0;
-      checkboxes.forEach(chk => {
-        if(chk.checked) completed++;
-      });
-      if (completed === 0) return;
-      totalSets += checkboxes.length;
-      totalCompleted += completed;
-      
-      const li = document.createElement("li");
-      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: Completed ${completed} of ${checkboxes.length} sets`;
-      workoutSummaryList.appendChild(li);
-    });
-
-    let totalLi = document.createElement('li');
-    totalLi.textContent = `Total: Completed ${totalCompleted} of ${totalSets} sets`;
-    workoutSummaryList.appendChild(totalLi);
-
-    let timeLi = document.createElement("li");
-    timeLi.textContent = `Elapsed Time: ${formatTime(elapsedSeconds)}`;
-    workoutSummaryList.appendChild(timeLi);
-
-    workoutSummaryModal.style.display = "flex";
-    workoutSummaryModal.setAttribute("aria-hidden", "false");
-    workoutSummaryModal.focus();
-  }
-
-  function closeSummary() {
-    workoutSummaryModal.style.display = "none";
-    workoutSummaryModal.setAttribute("aria-hidden", "true");
-  }
-
-  function formatTime(t){
-    let h = Math.floor(t/3600);
-    let m = Math.floor((t%3600)/60);
-    let s = t%60;
-    return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+  function formatTime(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
   function toggleStopwatch() {
@@ -237,42 +135,162 @@ document.addEventListener("DOMContentLoaded", () => {
     startStopBtn.setAttribute("aria-pressed", "false");
   }
 
-  startStopBtn.addEventListener("click", toggleStopwatch);
-  resetBtn.addEventListener("click", resetStopwatch);
+  resetBtn.addEventListener('click', resetStopwatch);
+  startStopBtn.addEventListener('click', toggleStopwatch);
 
-  resetTrackingBtn.addEventListener("click", () => {
+  resetTrackingBtn.addEventListener('click', () => {
     panels.forEach(panel => {
-      panel.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
-      panel.querySelectorAll("textarea").forEach(ta => ta.value = "");
-      localStorage.removeItem(`tracking-${panel.id.replace("panel-", "")}`);
+      const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => cb.checked = false);
+      const textareas = panel.querySelectorAll('textarea');
+      textareas.forEach(ta => ta.value = '');
+      localStorage.removeItem(`tracking-${panel.id.replace('panel-', '')}`);
     });
   });
 
-  startRestBtn.addEventListener("click", startRest);
-  stopRestBtn.addEventListener("click", stopRest);
-  resetRestBtn.addEventListener("click", resetRest);
-
-  closeSummaryBtn.addEventListener("click", closeSummary);
-
-  tabs.forEach((tab, idx) => {
-    tab.addEventListener("click", () => {
-      activateTab(tab.id.replace("tab-", ""));
-    });
-    tab.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") {
-        let nextIdx = (idx + 1) % tabs.length;
-        tabs[nextIdx].focus();
-      } else if (e.key === "ArrowLeft") {
-        let prevIdx = (idx - 1 + tabs.length) % tabs.length;
-        tabs[prevIdx].focus();
-      } else if (e.key === "Enter" || e.key === " ") {
-        activateTab(tabs[idx].id.replace("tab-", ""));
-      }
-    });
+  startRestBtn.addEventListener('click', () => {
+    if (!restRunning) {
+      restSecondsLeft = 60;
+      updateRestTimer();
+      restRunning = true;
+      startRestBtn.disabled = true;
+      stopRestBtn.disabled = false;
+      resetRestBtn.disabled = false;
+      restTimerInterval = setInterval(() => {
+        restSecondsLeft--;
+        updateRestTimer();
+        if (restSecondsLeft <= 0) {
+          clearInterval(restTimerInterval);
+          restRunning = false;
+          startRestBtn.disabled = false;
+          stopRestBtn.disabled = true;
+          resetRestBtn.disabled = false;
+          alert('Rest timer completed!');
+        }
+      }, 1000);
+    }
   });
 
+  stopRestBtn.addEventListener('click', () => {
+    if (restRunning) {
+      clearInterval(restTimerInterval);
+      restRunning = false;
+      startRestBtn.disabled = false;
+      stopRestBtn.disabled = true;
+      resetRestBtn.disabled = false;
+    }
+  });
+
+  resetRestBtn.addEventListener('click', () => {
+    clearInterval(restTimerInterval);
+    restSecondsLeft = 0;
+    updateRestTimer();
+    restRunning = false;
+    startRestBtn.disabled = false;
+    stopRestBtn.disabled = true;
+    resetRestBtn.disabled = true;
+  });
+
+  function updateRestTimer() {
+    const mins = Math.floor(restSecondsLeft / 60);
+    const secs = restSecondsLeft % 60;
+    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  workoutSummaryModal.querySelector('button').addEventListener('click', () => {
+    workoutSummaryModal.style.display = 'none';
+    workoutSummaryModal.setAttribute('aria-hidden', 'true');
+  });
+
+  function showSummary() {
+    const list = workoutSummaryModal.querySelector('ul');
+    list.innerHTML = '';
+    let totalSets = 0, totalDone = 0;
+
+    panels.forEach(panel => {
+      const day = panel.id.replace('panel-', '');
+      const boxes = panel.querySelectorAll('input[type="checkbox"]');
+      const done = Array.from(boxes).filter(cb => cb.checked).length;
+      if (done === 0) return;
+      totalSets += boxes.length;
+      totalDone += done;
+      const li = document.createElement('li');
+      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: completed ${done} of ${boxes.length} sets`;
+      list.appendChild(li);
+    });
+
+    const totalLi = document.createElement('li');
+    totalLi.textContent = `Total: completed ${totalDone} of ${totalSets} sets`;
+    list.appendChild(totalLi);
+
+    const timeLi = document.createElement('li');
+    timeLi.textContent = `Elapsed time: ${formatTime(elapsedSeconds)}`;
+    list.appendChild(timeLi);
+
+    workoutSummaryModal.style.display = 'flex';
+    workoutSummaryModal.setAttribute('aria-hidden', 'false');
+    workoutSummaryModal.focus();
+  }
+
+  function addSummaryButton() {
+    const btn = document.createElement('button');
+    btn.id = 'showSummaryBtn';
+    btn.textContent = 'Show Summary';
+    btn.style.marginTop = '10px';
+    btn.style.backgroundColor = '#448aff';
+    btn.style.color = '#000';
+    btn.style.border = 'none';
+    btn.style.padding = '10px 25px';
+    btn.style.borderRadius = '30px';
+    btn.style.cursor = 'pointer';
+    btn.style.fontWeight = '700';
+
+    btn.addEventListener('click', showSummary);
+    document.getElementById('stopwatch').appendChild(btn);
+  }
+
+  function setUpTabs() {
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        activateTab(tab.id.replace('tab-', ''));
+      });
+      tab.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          let next = (index + 1) % tabs.length;
+          tabs[next].focus();
+        } else if (e.key === 'ArrowLeft') {
+          let prev = (index - 1 + tabs.length) % tabs.length;
+          tabs[prev].focus();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          activateTab(tab.id.replace('tab-', ''));
+        }
+      });
+    });
+  }
+
+  function setupAutoAdvance() {
+    panels.forEach(panel => {
+      panel.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox') {
+          const day = panel.id.replace('panel-', '');
+          saveProgress(day);
+          if (e.target.checked) {
+            const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
+            const idx = checkboxes.indexOf(e.target);
+            if (idx !== -1 && idx + 1 < checkboxes.length) {
+              checkboxes[idx + 1].focus();
+            }
+          }
+        }
+      });
+    });
+  }
+
+  addSummaryButton();
+  setUpTabs();
   setupAutoAdvance();
 
   activateTab(dayMap[getOttawaDayIndex()]);
   loadProgress();
+
 });
