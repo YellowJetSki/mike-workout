@@ -140,6 +140,7 @@ h3 {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   user-select: none;
+  position: relative;
 }
 
 #dayTabs button[aria-selected="true"] {
@@ -159,22 +160,34 @@ h3 {
   box-shadow: 0 2px 7px rgba(68,134,255,0.55);
 }
 
+/* Completion indicator dot in the tab */
+#dayTabs button .completion-indicator {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  box-shadow: 0 0 4px var(--primary-light);
+}
+
+#dayTabs button.completed .completion-indicator {
+  display: block;
+}
+
 /* Main content */
 main {
   background: var(--surface);
   border-radius: var(--border-radius);
-  padding: 24px 24px 100px 24px;
+  padding: 24px 24px 120px 24px;
   box-shadow: var(--shadow-strong);
   min-height: 450px;
   position: relative;
   user-select: none;
   overflow-y: auto;
   color: var(--text-primary);
-}
-
-/* Prevent content behind fixed footer */
-main::-webkit-scrollbar {
-  height: 12px;
 }
 
 ul {
@@ -195,8 +208,8 @@ li {
   position: relative;
 }
 
-li > strong {
-  flex: 1 0 auto;
+strong {
+  flex: 1 1 auto;
 }
 
 li label {
@@ -209,7 +222,7 @@ li label {
   color: var(--primary-light);
 }
 
-input[type=checkbox] {
+input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 28px;
@@ -227,17 +240,17 @@ input[type=checkbox] {
   margin: 0;
 }
 
-input[type=checkbox]:focus-visible {
+input[type="checkbox"]:focus-visible {
   outline: 3px solid var(--primary-light);
   outline-offset: 2px;
 }
 
-input[type=checkbox]:checked {
+input[type="checkbox"]:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-input[type=checkbox]::after {
+input[type="checkbox"]::after {
   content: '';
   position: absolute;
   width: 12px;
@@ -250,13 +263,8 @@ input[type=checkbox]::after {
   left: 6px;
 }
 
-input[type=checkbox]:checked::after {
+input[type="checkbox"]:checked::after {
   display: block;
-}
-
-.exercise-description {
-  flex: 1 1 auto;
-  color: var(--text-secondary);
 }
 
 .exercise-notes-container {
@@ -282,16 +290,6 @@ input[type=checkbox]:checked::after {
   border-color: var(--primary-light);
   box-shadow: 0 0 10px var(--primary-light);
   outline: none;
-}
-
-/* Progress indicator */
-.progress-indicator {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--primary-light);
-  margin-left: auto;
-  white-space: nowrap;
-  user-select: none;
 }
 
 #timerPanel {

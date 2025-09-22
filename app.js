@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const workoutSummaryModal = document.getElementById("workoutSummaryModal");
   const workoutSummaryList = workoutSummaryModal.querySelector("ul");
   const closeSummaryBtn = document.getElementById("closeSummaryBtn");
+  const showSummaryBtn = document.getElementById("showSummaryBtn");
 
   let stopwatchInterval = null;
   let elapsedSeconds = 0;
@@ -52,6 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
         panel.setAttribute("tabindex", -1);
       }
     });
+
+    updateDayCompletionIndicators();
     updateProgressIndicators();
   }
 
@@ -102,6 +105,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function updateDayCompletionIndicators() {
+    tabs.forEach(tab => {
+      const day = tab.id.replace('tab-', '');
+      const panel = document.getElementById(`panel-${day}`);
+      if (!panel) return;
+      const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      if (allChecked && checkboxes.length > 0) {
+        tab.classList.add('completed');
+      } else {
+        tab.classList.remove('completed');
+      }
+    });
+  }
+
   function setupAutoAdvance() {
     panels.forEach(panel => {
       panel.addEventListener('change', e => {
@@ -109,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const day = panel.id.replace('panel-', '');
           saveProgress(day);
           updateProgressIndicators();
+          updateDayCompletionIndicators();
           if (e.target.checked) {
             const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
             const idx = checkboxes.indexOf(e.target);
@@ -166,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem(`tracking-${panel.id.replace('panel-', '')}`);
     });
     updateProgressIndicators();
+    updateDayCompletionIndicators();
   });
 
   startRestBtn.addEventListener('click', () => {
@@ -217,13 +237,13 @@ document.addEventListener("DOMContentLoaded", () => {
     timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
   }
 
-  workoutSummaryModal.querySelector('button').addEventListener('click', () => {
+  closeSummaryBtn.addEventListener('click', () => {
     workoutSummaryModal.style.display = 'none';
     workoutSummaryModal.setAttribute('aria-hidden', 'true');
   });
 
-  function showSummary() {
-    const list = workoutSummaryModal.querySelector('ul');
+  showSummaryBtn?.addEventListener('click', () => {
+    const list = workoutSummaryList;
     list.innerHTML = '';
     let totalSets = 0, totalDone = 0;
     let totalExercises = 0, completedExercises = 0;
@@ -263,24 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
     workoutSummaryModal.style.display = "flex";
     workoutSummaryModal.setAttribute("aria-hidden", "false");
     workoutSummaryModal.focus();
-  }
-
-  function addSummaryButton() {
-    const btn = document.createElement('button');
-    btn.id = 'showSummaryBtn';
-    btn.textContent = 'Show Summary';
-    btn.style.marginTop = '10px';
-    btn.style.backgroundColor = '#448aff';
-    btn.style.color = '#000';
-    btn.style.border = 'none';
-    btn.style.padding = '10px 25px';
-    btn.style.borderRadius = '30px';
-    btn.style.cursor = 'pointer';
-    btn.style.fontWeight = '700';
-
-    btn.addEventListener('click', showSummary);
-    document.getElementById('stopwatch').appendChild(btn);
-  }
+  });
 
   function setUpTabs() {
     tabs.forEach((tab, idx) => {
@@ -301,7 +304,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setUpTabs();
   setupAutoAdvance();
-  addSummaryButton();
   activateTab(dayMap[getOttawaDayIndex()]);
   loadProgress();
 });
