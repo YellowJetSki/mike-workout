@@ -1,6 +1,6 @@
 {
-  "name": "Muscle Growth Workout Tracker",
-  "short_name": "Workout Tracker",
+  "name": "Get Swole",
+  "short_name": "Get Swole",
   "description": "Custom kettlebell and pulley workout tracker with progress logging and stopwatch.",
   "start_url": "./index.html",
   "display": "standalone",
