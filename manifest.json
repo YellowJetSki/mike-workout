@@ -2,7 +2,7 @@
   "name": "Get Swole",
   "short_name": "Get Swole",
   "description": "Custom kettlebell and pulley workout tracker with progress logging and stopwatch.",
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#448AFF",
