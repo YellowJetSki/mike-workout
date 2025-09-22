@@ -1,24 +1,26 @@
-  window.addEventListener("load", () => {
-    const splash = document.getElementById("splash-screen");
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash-screen");
+  setTimeout(() => {
+    splash.classList.add("fade-out");
     setTimeout(() => {
-      splash.classList.add("fade-out");
-      setTimeout(() => {
-        splash.style.display = "none";
-      }, 600); // match CSS transition duration
-    }, 1500);
+      splash.style.display = "none";
+    }, 600); // match CSS transition duration
+  }, 1500);
 
-    if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("service-worker.js")
+      .then((registration) => {
+        console.log(
+          "Service Worker registered with scope:",
+          registration.scope
+        );
       })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
+      .catch((error) => {
+        console.error("Service Worker registration failed:", error);
       });
-  });
-}
-  });
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll('#dayTabs [role="tab"]');
