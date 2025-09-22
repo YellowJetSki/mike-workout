@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Muscle Growth Workout Tracker - Dark Mode</title>
+    <title>Muscle Growth Workout Tracker - Clean Modern Design</title>
     <link rel="stylesheet" href="styles.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -36,7 +36,7 @@
         <button
           id="showSummaryBtn"
           aria-label="Show workout summary"
-          style="margin-top: 10px"
+          style="margin-top: 1rem"
         >
           Show Summary
         </button>
@@ -314,7 +314,7 @@
         </ul>
       </section>
     </main>
-    <div id="timerPanel" hidden>
+    <div id="timerPanel">
       <div id="timerDisplay" aria-live="polite" aria-atomic="true">
         Rest: 00:00
       </div>
@@ -342,6 +342,15 @@
         <button id="closeSummaryBtn" aria-label="Close summary">Close</button>
       </div>
     </div>
+    <button
+      id="resetTrackingBtn"
+      aria-label="Reset workout tracking"
+      title="Reset workout tracking"
+      aria-haspopup="true"
+      style="display: none"
+    >
+      <span class="material-icons">autorenew</span>
+    </button>
     <script src="app.js"></script>
   </body>
 </html>
