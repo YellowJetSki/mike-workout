@@ -9,260 +9,260 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 <body>
-  <div id="header-wrapper">
-    <!-- Stopwatch -->
-    <div id="stopwatch" role="region" aria-label="Stopwatch timer controls">
-      <h2>Stopwatch</h2>
-      <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
-      <div style="display:flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <button id="startStopBtn" aria-pressed="false" aria-label="Start or stop stopwatch timer" style="flex:1 1 120px;">Start</button>
-        <button id="resetBtn" aria-label="Reset stopwatch timer" style="flex:1 1 120px;">Reset</button>
-      </div>
+<div id="header-wrapper">
+  <!-- Stopwatch -->
+  <div id="stopwatch" role="region" aria-label="Stopwatch timer controls">
+    <h2>Stopwatch</h2>
+    <div id="timer" aria-live="polite" aria-atomic="true">00:00:00</div>
+    <div style="display:flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+      <button id="startStopBtn" aria-pressed="false" aria-label="Start or stop stopwatch timer" style="flex:1 1 120px;">Start</button>
+      <button id="resetBtn" aria-label="Reset stopwatch timer" style="flex:1 1 120px;">Reset</button>
     </div>
-
-    <!-- Tabs for Days -->
-    <nav role="tablist" aria-label="Workout Days" id="dayTabs">
-      <button role="tab" id="tab-monday" aria-selected="true" aria-controls="panel-monday" tabindex="0">Monday</button>
-      <button role="tab" id="tab-tuesday" aria-selected="false" aria-controls="panel-tuesday" tabindex="-1">Tuesday</button>
-      <button role="tab" id="tab-wednesday" aria-selected="false" aria-controls="panel-wednesday" tabindex="-1">Wednesday</button>
-      <button role="tab" id="tab-thursday" aria-selected="false" aria-controls="panel-thursday" tabindex="-1">Thursday</button>
-      <button role="tab" id="tab-friday" aria-selected="false" aria-controls="panel-friday" tabindex="-1">Friday</button>
-      <button role="tab" id="tab-saturday" aria-selected="false" aria-controls="panel-saturday" tabindex="-1">Saturday</button>
-      <button role="tab" id="tab-sunday" aria-selected="false" aria-controls="panel-sunday" tabindex="-1">Sunday</button>
-    </nav>
   </div>
 
-  <main>
-    <!-- Reset tracking floating action button -->
-    <button id="resetTrackingBtn" aria-label="Reset workout tracking" title="Reset Workout Tracking">
-      <span class="material-icons" aria-hidden="true">autorenew</span>
-    </button>
+  <!-- Tabs for Days -->
+  <nav role="tablist" aria-label="Workout Days" id="dayTabs">
+    <button role="tab" id="tab-monday" aria-selected="true" aria-controls="panel-monday" tabindex="0">Monday</button>
+    <button role="tab" id="tab-tuesday" aria-selected="false" aria-controls="panel-tuesday" tabindex="-1">Tuesday</button>
+    <button role="tab" id="tab-wednesday" aria-selected="false" aria-controls="panel-wednesday" tabindex="-1">Wednesday</button>
+    <button role="tab" id="tab-thursday" aria-selected="false" aria-controls="panel-thursday" tabindex="-1">Thursday</button>
+    <button role="tab" id="tab-friday" aria-selected="false" aria-controls="panel-friday" tabindex="-1">Friday</button>
+    <button role="tab" id="tab-saturday" aria-selected="false" aria-controls="panel-saturday" tabindex="-1">Saturday</button>
+    <button role="tab" id="tab-sunday" aria-selected="false" aria-controls="panel-sunday" tabindex="-1">Sunday</button>
+  </nav>
+</div>
 
-    <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday" tabindex="0">
-      <ul>
-        <li>KB Military Press:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (8-10 reps)
-        </li>
-        <li>KB Floor Press:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (8-10 reps)
-        </li>
-        <li>KB Triceps Extensions:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (10-12 reps)
-        </li>
-        <li>Tricep Pulldown Cable:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (10-12 reps)
-        </li>
-        <li>Kettlebell Single-Arm Push Press:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (8-10 reps)
-        </li>
-        <li>Push-Ups:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (To failure or 12-15 reps)
-        </li>
-      </ul>
-    </section>
+<main>
+  <!-- Reset tracking floating action button -->
+  <button id="resetTrackingBtn" aria-label="Reset workout tracking" title="Reset Workout Tracking">
+    <span class="material-icons" aria-hidden="true">autorenew</span>
+  </button>
 
-    <section id="panel-tuesday" role="tabpanel" aria-labelledby="tab-tuesday" tabindex="0" hidden>
-      <ul>
-        <li>KB Front Squat:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (10 reps)
-        </li>
-        <li>KB Goblet Split Squat:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (10 reps per leg)
-        </li>
-        <li>KB Deadlift:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (8-10 reps)
-        </li>
-        <li>KB Farmers Carry:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (40 meters or 30-60 seconds)
-        </li>
-        <li>Plank on KB:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (30-45 seconds)
-        </li>
-      </ul>
-    </section>
+  <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday" tabindex="0">
+    <ul>
+      <li>KB Military Press:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (8-10 reps)
+      </li>
+      <li>KB Floor Press:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (8-10 reps)
+      </li>
+      <li>KB Triceps Extensions:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (10-12 reps)
+      </li>
+      <li>Tricep Pulldown Cable:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (10-12 reps)
+      </li>
+      <li>Kettlebell Single-Arm Push Press:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (8-10 reps)
+      </li>
+      <li>Push-Ups:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (To failure or 12-15 reps)
+      </li>
+    </ul>
+  </section>
 
-    <section id="panel-wednesday" role="tabpanel" aria-labelledby="tab-wednesday" tabindex="0" hidden>
-      <ul>
-        <li>Lat Pulldown:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (10-12 reps)
-        </li>
-        <li>Machine KB Row:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (10-12 reps)
-        </li>
-        <li>KB Suitcase Deadlift:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (10 reps per side)
-        </li>
-        <li>Face Pull Pulley:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (12-15 reps)
-        </li>
-        <li>Biceps Curl:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (12 reps)
-        </li>
-      </ul>
-    </section>
+  <section id="panel-tuesday" role="tabpanel" aria-labelledby="tab-tuesday" tabindex="0" hidden>
+    <ul>
+      <li>KB Front Squat:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (10 reps)
+      </li>
+      <li>KB Goblet Split Squat:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (10 reps per leg)
+      </li>
+      <li>KB Deadlift:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (8-10 reps)
+      </li>
+      <li>KB Farmers Carry:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (40 meters or 30-60 seconds)
+      </li>
+      <li>Plank on KB:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (30-45 seconds)
+      </li>
+    </ul>
+  </section>
 
-    <section id="panel-thursday" role="tabpanel" aria-labelledby="tab-thursday" tabindex="0" hidden>
-      <ul>
-        <li>KB Swings EMOM:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          <label><input type="checkbox" /> Set 5</label>
-          (20 reps Every Minute On the Minute)
-        </li>
-        <li>Double KB Clean Press:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (8 reps)
-        </li>
-        <li>KB Reverse Lunge to Clean:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (10 reps per leg)
-        </li>
-        <li>Turkish Get-Up:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (5 reps per side)
-        </li>
-        <li>KB Carry Walk:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (60 seconds)
-        </li>
-      </ul>
-    </section>
+  <section id="panel-wednesday" role="tabpanel" aria-labelledby="tab-wednesday" tabindex="0" hidden>
+    <ul>
+      <li>Lat Pulldown:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (10-12 reps)
+      </li>
+      <li>Machine KB Row:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (10-12 reps)
+      </li>
+      <li>KB Suitcase Deadlift:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (10 reps per side)
+      </li>
+      <li>Face Pull Pulley:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (12-15 reps)
+      </li>
+      <li>Biceps Curl:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (12 reps)
+      </li>
+    </ul>
+  </section>
 
-    <section id="panel-friday" role="tabpanel" aria-labelledby="tab-friday" tabindex="0" hidden>
-      <ul>
-        <li>Rest or Light Mobility:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          (1-2 sets as needed)
-        </li>
-      </ul>
-    </section>
+  <section id="panel-thursday" role="tabpanel" aria-labelledby="tab-thursday" tabindex="0" hidden>
+    <ul>
+      <li>KB Swings EMOM:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        <label><input type="checkbox" /> Set 5</label>
+        (20 reps Every Minute On the Minute)
+      </li>
+      <li>Double KB Clean Press:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (8 reps)
+      </li>
+      <li>KB Reverse Lunge to Clean:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (10 reps per leg)
+      </li>
+      <li>Turkish Get-Up:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (5 reps per side)
+      </li>
+      <li>KB Carry Walk:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (60 seconds)
+      </li>
+    </ul>
+  </section>
 
-    <section id="panel-saturday" role="tabpanel" aria-labelledby="tab-saturday" tabindex="0" hidden>
-      <ul>
-        <li>Bodyweight Mobility Drills:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (10-15 reps)
-        </li>
-        <li>Yoga Stretching:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          (hold stretches 20-60 seconds)
-        </li>
-        <li>Light KB Complex:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (3 rounds at a comfortable pace)
-        </li>
-      </ul>
-    </section>
+  <section id="panel-friday" role="tabpanel" aria-labelledby="tab-friday" tabindex="0" hidden>
+    <ul>
+      <li>Rest or Light Mobility:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        (1-2 sets as needed)
+      </li>
+    </ul>
+  </section>
 
-    <section id="panel-sunday" role="tabpanel" aria-labelledby="tab-sunday" tabindex="0" hidden>
-      <ul>
-        <li>KB Bulgarian Split Squat:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (8-10 reps per leg)
-        </li>
-        <li>Leg Curls/Press:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (10-12 reps)
-        </li>
-        <li>KB Sumo Deadlift:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          <label><input type="checkbox" /> Set 4</label>
-          (10 reps)
-        </li>
-        <li>Hanging Knee Raise:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (12 reps)
-        </li>
-        <li>Optional Push-Ups or Ropes:
-          <label><input type="checkbox" /> Set 1</label>
-          <label><input type="checkbox" /> Set 2</label>
-          <label><input type="checkbox" /> Set 3</label>
-          (3 sets as desired)
-        </li>
-      </ul>
-    </section>
-  </main>
+  <section id="panel-saturday" role="tabpanel" aria-labelledby="tab-saturday" tabindex="0" hidden>
+    <ul>
+      <li>Bodyweight Mobility Drills:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (10-15 reps)
+      </li>
+      <li>Yoga Stretching:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        (hold stretches 20-60 seconds)
+      </li>
+      <li>Light KB Complex:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (3 rounds at a comfortable pace)
+      </li>
+    </ul>
+  </section>
 
-  <script src="app.js"></script>
+  <section id="panel-sunday" role="tabpanel" aria-labelledby="tab-sunday" tabindex="0" hidden>
+    <ul>
+      <li>KB Bulgarian Split Squat:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (8-10 reps per leg)
+      </li>
+      <li>Leg Curls/Press:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (10-12 reps)
+      </li>
+      <li>KB Sumo Deadlift:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        <label><input type="checkbox" /> Set 4</label>
+        (10 reps)
+      </li>
+      <li>Hanging Knee Raise:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (12 reps)
+      </li>
+      <li>Optional Push-Ups or Ropes:
+        <label><input type="checkbox" /> Set 1</label>
+        <label><input type="checkbox" /> Set 2</label>
+        <label><input type="checkbox" /> Set 3</label>
+        (3 sets as desired)
+      </li>
+    </ul>
+  </section>
+</main>
+
+<script src="app.js"></script>
 </body>
 </html>

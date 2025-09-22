@@ -8,121 +8,120 @@ document.addEventListener("DOMContentLoaded", () => {
   const startStopBtn = document.getElementById("startStopBtn");
   const resetBtn = document.getElementById("resetBtn");
 
-  // Feature elements for rest timer UI created dynamically later
-  let timerPanel = null;
-  let timerDisplayRest = null;
-  let timerControls = null;
-
-  // Stopwatch state
-  let stopwatchInterval = null;
-  let elapsedSeconds = 0;
-  let running = false;
+  // Feature elements for rest timer created in HTML
+  const timerPanel = document.getElementById("timerPanel");
+  const timerDisplayRest = document.getElementById("timerDisplay");
+  const timerControls = document.getElementById("timerControls");
+  const startRestBtn = document.getElementById("startRestBtn");
+  const stopRestBtn = document.getElementById("stopRestBtn");
+  const resetRestBtn = document.getElementById("resetRestBtn");
 
   // Rest timer state
   let restTimerInterval = null;
   let restSecondsLeft = 0;
   let restRunning = false;
 
+  // Stopwatch state
+  let stopwatchInterval = null;
+  let elapsedSeconds = 0;
+  let running = false;
+
   // Map JS day index to day keys used in tabs and panels
   const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
-  // Get current day in Ottawa timezone (0=Sunday, 1=Monday, etc.)
+  // Get Ottawa day index with timezone awareness
   function getOttawaDayIndex() {
     try {
-      const ottawaDateString = new Date().toLocaleString("en-CA", { timeZone: "America/Toronto" });
-      const ottawaDate = new Date(ottawaDateString);
+      const ottawaDate = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Toronto"}));
       return ottawaDate.getDay();
     } catch {
       return new Date().getDay();
     }
   }
 
-  // Activate tab by day key: update aria-selected, tabIndex on tabs and show/hide panels
-  function activateTab(dayKey) {
+  // Activate tab and corresponding panel
+  function activateTab(day) {
     tabs.forEach(tab => {
-      const selected = tab.id === `tab-${dayKey}`;
+      const selected = (tab.id === `tab-${day}`);
       tab.setAttribute("aria-selected", selected);
       tab.tabIndex = selected ? 0 : -1;
     });
-
     panels.forEach(panel => {
-      const isActive = panel.id === `panel-${dayKey}`;
-      panel.hidden = !isActive;
-      if (isActive) {
+      if(panel.id === `panel-${day}`) {
+        panel.hidden = false;
         panel.setAttribute("tabindex", "0");
       } else {
+        panel.hidden = true;
         panel.setAttribute("tabindex", "-1");
       }
     });
   }
 
-  // Load saved checkbox and notes state from localStorage per day panel
-  function loadTrackingState() {
+  // Load progress and notes from localStorage
+  function loadProgress() {
     panels.forEach(panel => {
       const day = panel.id.replace("panel-", "");
       const saved = localStorage.getItem(`tracking-${day}`);
-      if (saved) {
+      if(saved) {
         try {
           const data = JSON.parse(saved);
-          if (data?.states) {
-            const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach((checkbox, i) => {
-              checkbox.checked = !!data.states[i];
+          if(data.states) {
+            let checkboxes = panel.querySelectorAll("input[type=checkbox]");
+            data.states.forEach((v, i) => {
+              if(checkboxes[i]) checkboxes[i].checked = v;
             });
           }
-          if (data?.notes) {
-            const textareas = panel.querySelectorAll('.exercise-notes-container textarea');
-            textareas.forEach((textarea, i) => {
-              if (data.notes[i]) textarea.value = data.notes[i];
+          if(data.notes) {
+            let notes = panel.querySelectorAll("textarea");
+            data.notes.forEach((text, i) => {
+              if(notes[i]) notes[i].value = text;
             });
           }
-        } catch {}
+        } catch{}
       }
     });
   }
 
-  // Save checkbox and notes state to localStorage per day panel
-  function saveTrackingState(day) {
+  // Save progress to localStorage for current day
+  function saveProgress(day) {
     const panel = document.getElementById(`panel-${day}`);
-    if (!panel) return;
-
-    const states = Array.from(panel.querySelectorAll('input[type="checkbox"]'))
-      .map(chk => chk.checked);
-    const notes = Array.from(panel.querySelectorAll('.exercise-notes-container textarea'))
-      .map(textarea => textarea.value);
-
-    localStorage.setItem(`tracking-${day}`, JSON.stringify({ states, notes }));
+    if(!panel) return;
+    let checkboxes = panel.querySelectorAll("input[type=checkbox]");
+    let states = Array.from(checkboxes).map(box => box.checked);
+    let notesFields = panel.querySelectorAll("textarea");
+    let notes = Array.from(notesFields).map(textarea => textarea.value);
+    localStorage.setItem(`tracking-${day}`, JSON.stringify({states, notes}));
   }
 
-  // Dynamically add exercise notes textarea to each li in all panels
-  function addExerciseNotes() {
+  // Add notes textarea to each exercise if missing
+  function addNotesFields(){
     panels.forEach(panel => {
-      panel.querySelectorAll('li').forEach(li => {
-        if (!li.querySelector('.exercise-notes-container')) {
-          const notesDiv = document.createElement('div');
-          notesDiv.className = 'exercise-notes-container';
-          const textarea = document.createElement('textarea');
-          textarea.placeholder = 'Add notes (weight, form, etc.)...';
-          notesDiv.appendChild(textarea);
-          li.appendChild(notesDiv);
+      let exercises = panel.querySelectorAll("li");
+      exercises.forEach(li => {
+        if(!li.querySelector(".exercise-notes-container")){
+          let container = document.createElement("div");
+          container.className = "exercise-notes-container";
+          let textarea = document.createElement("textarea");
+          textarea.placeholder = "Add notes (weight, form, etc.)";
+          container.appendChild(textarea);
+          li.appendChild(container);
         }
       });
     });
   }
 
-  // Handle checking checkboxes auto focus on next checkbox if any
-  function handleAutoAdvance() {
+  // Auto advance to next checkbox on checking current
+  function setupAutoAdvance(){
     panels.forEach(panel => {
-      panel.addEventListener('change', (e) => {
-        if (e.target && e.target.type === 'checkbox') {
-          const day = panel.id.replace('panel-', '');
-          saveTrackingState(day);
-
-          if (e.target.checked) {
-            const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
-            const idx = checkboxes.indexOf(e.target);
-            if (idx >= 0 && idx + 1 < checkboxes.length) {
-              checkboxes[idx + 1].focus();
+      panel.addEventListener("change", e => {
+        if((e.target).type === "checkbox") {
+          const day = panel.id.replace("panel-", "");
+          saveProgress(day);
+          if(e.target.checked){
+            let checkboxes = Array.from(panel.querySelectorAll("input[type=checkbox]"));
+            let idx = checkboxes.indexOf(e.target);
+            if(idx !== -1 && idx + 1 < checkboxes.length){
+              checkboxes[idx+1].focus();
             }
           }
         }
@@ -130,238 +129,197 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Create rest timer UI at bottom
-  function createTimerPanel() {
-    timerPanel = document.createElement('div');
-    timerPanel.id = 'timerPanel';
-
-    timerDisplayRest = document.createElement('div');
-    timerDisplayRest.id = 'timerDisplay';
-    timerDisplayRest.textContent = 'Rest: 00:00';
-
-    timerControls = document.createElement('div');
-    timerControls.id = 'timerControls';
-
-    const startBtn = document.createElement('button');
-    startBtn.textContent = 'Start Rest';
-    startBtn.setAttribute('aria-label', 'Start rest timer');
-
-    const stopBtn = document.createElement('button');
-    stopBtn.textContent = 'Stop Rest';
-    stopBtn.setAttribute('aria-label', 'Stop rest timer');
-    stopBtn.disabled = true;
-
-    const resetBtnRest = document.createElement('button');
-    resetBtnRest.textContent = 'Reset Rest';
-    resetBtnRest.setAttribute('aria-label', 'Reset rest timer');
-    resetBtnRest.disabled = true;
-
-    timerControls.appendChild(startBtn);
-    timerControls.appendChild(stopBtn);
-    timerControls.appendChild(resetBtnRest);
-
-    timerPanel.appendChild(timerDisplayRest);
-    timerPanel.appendChild(timerControls);
-    document.body.appendChild(timerPanel);
-
-    startBtn.addEventListener('click', () => {
-      if (restRunning) return;
-      restSecondsLeft = 60;
-      updateRestDisplay();
-      restRunning = true;
-      startBtn.disabled = true;
-      stopBtn.disabled = false;
-      resetBtnRest.disabled = false;
-
-      restTimerInterval = setInterval(() => {
-        restSecondsLeft--;
-        updateRestDisplay();
-        if (restSecondsLeft <= 0) {
-          clearInterval(restTimerInterval);
-          restRunning = false;
-          startBtn.disabled = false;
-          stopBtn.disabled = true;
-          resetBtnRest.disabled = false;
-          alert('Rest timer completed!');
-        }
-      }, 1000);
-    });
-
-    stopBtn.addEventListener('click', () => {
-      if (!restRunning) return;
-      clearInterval(restTimerInterval);
-      restRunning = false;
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-      resetBtnRest.disabled = false;
-    });
-
-    resetBtnRest.addEventListener('click', () => {
-      clearInterval(restTimerInterval);
-      restSecondsLeft = 0;
-      updateRestDisplay();
-      restRunning = false;
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-      resetBtnRest.disabled = true;
-    });
-  }
-
   // Update rest timer display text
-  function updateRestDisplay() {
-    const minutes = Math.floor(restSecondsLeft / 60).toString().padStart(2, '0');
-    const seconds = (restSecondsLeft % 60).toString().padStart(2, '0');
-    timerDisplayRest.textContent = `Rest: ${minutes}:${seconds}`;
+  function updateRestTimer() {
+    const mins = Math.floor(restSecondsLeft / 60);
+    const secs = restSecondsLeft % 60;
+    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
   }
 
-  // Create workout summary modal dialog
-  function createWorkoutSummaryModal() {
-    const modal = document.createElement('div');
-    modal.id = 'workoutSummaryModal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-label', 'Workout summary dialog');
+  // Start rest timer
+  function startRest(){
+    if(restRunning) return;
+    restSecondsLeft = 60; // default 60 seconds, could be customizable
+    restRunning = true;
+    updateRestTimer();
+    startRestBtn.disabled = true;
+    stopRestBtn.disabled = false;
+    resetRestBtn.disabled = false;
 
-    const content = document.createElement('div');
-    content.id = 'workoutSummaryContent';
+    restTimerInterval = setInterval(() => {
+      restSecondsLeft--;
+      updateRestTimer();
+      if(restSecondsLeft <= 0){
+        clearInterval(restTimerInterval);
+        restRunning = false;
+        startRestBtn.disabled = false;
+        stopRestBtn.disabled = true;
+        alert("Rest time's up!");
+      }
+    }, 1000);
+  }
 
-    const title = document.createElement('h2');
-    title.textContent = 'Workout Summary';
-    content.appendChild(title);
+  // Stop rest timer
+  function stopRest(){
+    if(!restRunning) return;
+    clearInterval(restTimerInterval);
+    restRunning = false;
+    startRestBtn.disabled = false;
+    stopRestBtn.disabled = true;
+  }
 
-    const list = document.createElement('ul');
-    content.appendChild(list);
+  // Reset rest timer
+  function resetRest(){
+    clearInterval(restTimerInterval);
+    restSecondsLeft = 0;
+    updateRestTimer();
+    restRunning = false;
+    startRestBtn.disabled = false;
+    stopRestBtn.disabled = true;
+    resetRestBtn.disabled = true;
+  }
 
-    const closeButton = document.createElement('button');
-    closeButton.className = 'closeSummary';
-    closeButton.textContent = 'Close';
-    closeButton.addEventListener('click', () => {
-      modal.style.display = 'none';
+  // Create workout summary modal UI
+  function createSummaryModal(){
+    let modal = document.getElementById("workoutSummaryModal");
+    let list = modal.querySelector("ul");
+    let closeBtn = modal.querySelector("button.closeSummary");
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
     });
-    content.appendChild(closeButton);
-
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-
-    return { modal, list };
+    return {modal, list};
   }
 
-  // Show workout summary content in modal
-  function showWorkoutSummary() {
-    const { modal, list } = workoutSummaryElements;
-    list.innerHTML = '';
-    let totalSets = 0;
-    let completedSets = 0;
+  // Show workout summary modal filled with data
+  function showSummary(){
+    let {modal, list} = workoutSummaryElements;
+    list.innerHTML = "";
+    let totalSets = 0, totalCompleted = 0;
 
     panels.forEach(panel => {
-      const day = panel.id.replace('panel-', '');
-      const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
-      let dayCompleted = 0;
-      checkboxes.forEach(chk => {
-        if (chk.checked) dayCompleted++;
-      });
-      let dayTotal = checkboxes.length;
-      totalSets += dayTotal;
-      completedSets += dayCompleted;
+      let day = panel.id.replace("panel-", "");
+      let checkboxes = panel.querySelectorAll("input[type=checkbox]");
+      let completed = 0;
+      checkboxes.forEach(chk => { if(chk.checked) completed++; });
+      if(completed === 0) return;
+      totalSets += checkboxes.length;
+      totalCompleted += completed;
 
-      if (dayCompleted === 0) return;
-
-      const daySummary = document.createElement('li');
-      daySummary.innerHTML = `<strong>${day.charAt(0).toUpperCase() + day.slice(1)}</strong>: ${dayCompleted} of ${dayTotal} sets completed`;
-      list.appendChild(daySummary);
+      let li = document.createElement("li");
+      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: Completed ${completed} out of ${checkboxes.length} sets`;
+      list.appendChild(li);
     });
 
-    const totalSummary = document.createElement('li');
-    totalSummary.innerHTML = `<strong>Total Sets:</strong> ${completedSets} of ${totalSets} completed`;
-    list.appendChild(totalSummary);
+    let liTotal = document.createElement("li");
+    liTotal.textContent = `Total: Completed ${totalCompleted} out of ${totalSets} sets`;
+    list.appendChild(liTotal);
 
-    const timeSummary = document.createElement('li');
-    timeSummary.innerHTML = `<strong>Total Workout Time:</strong> ${formatTime(elapsedSeconds)}`;
-    list.appendChild(timeSummary);
+    let liTime = document.createElement("li");
+    liTime.textContent = `Elapsed Time: ${formatTime(elapsedSeconds)}`;
+    list.appendChild(liTime);
 
-    modal.style.display = 'flex';
+    modal.style.display = "flex";
     modal.focus();
   }
 
-  // Format seconds to hh:mm:ss string
-  function formatTime(totalSeconds) {
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  // Format seconds to HH:MM:SS string
+  function formatTime(t){
+    let h = Math.floor(t/3600);
+    let m = Math.floor((t%3600)/60);
+    let s = t%60;
+    return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
   }
 
   // Stopwatch control handlers
-  function startStopwatch() {
-    if (running) {
+  function toggleStopwatch(){
+    if(running){
       clearInterval(stopwatchInterval);
       running = false;
-      startStopBtn.textContent = 'Start';
-      startStopBtn.setAttribute('aria-pressed', 'false');
+      startStopBtn.textContent = "Start";
+      startStopBtn.setAttribute("aria-pressed", "false");
     } else {
       stopwatchInterval = setInterval(() => {
         elapsedSeconds++;
         timerDisplay.textContent = formatTime(elapsedSeconds);
       }, 1000);
       running = true;
-      startStopBtn.textContent = 'Stop';
-      startStopBtn.setAttribute('aria-pressed', 'true');
+      startStopBtn.textContent = "Stop";
+      startStopBtn.setAttribute("aria-pressed", "true");
     }
   }
 
-  function resetStopwatch() {
+  function resetStopwatch(){
     clearInterval(stopwatchInterval);
     elapsedSeconds = 0;
     timerDisplay.textContent = formatTime(elapsedSeconds);
     running = false;
-    startStopBtn.textContent = 'Start';
-    startStopBtn.setAttribute('aria-pressed', 'false');
+    startStopBtn.textContent = "Start";
+    startStopBtn.setAttribute("aria-pressed", "false");
   }
 
-  // Add workout summary button near stopwatch
-  function addSummaryButton() {
-    const btn = document.createElement('button');
-    btn.id = 'showSummaryBtn';
-    btn.textContent = 'Show Summary';
-    btn.style.marginTop = '0.6rem';
-    btn.style.backgroundColor = 'var(--primary-color)';
-    btn.style.color = 'var(--background-color)';
-    btn.style.border = 'none';
-    btn.style.padding = '0.4rem 1rem';
-    btn.style.borderRadius = '24px';
-    btn.style.cursor = 'pointer';
-    btn.style.fontWeight = '700';
-
-    btn.addEventListener('click', () => {
-      showWorkoutSummary();
-    });
-
-    document.getElementById('stopwatch').appendChild(btn);
+  // Add summary button near stopwatch
+  function addSummaryButton(){
+    let btn = document.createElement("button");
+    btn.id = "showSummaryBtn";
+    btn.textContent = "Show Summary";
+    btn.style.marginTop = "0.6rem";
+    btn.style.backgroundColor = "var(--primary-color)";
+    btn.style.color = "var(--background-color)";
+    btn.style.border = "none";
+    btn.style.padding = "0.4rem 1rem";
+    btn.style.borderRadius = "24px";
+    btn.style.cursor = "pointer";
+    btn.style.fontWeight = "700";
+    btn.setAttribute("aria-label","Show workout summary");
+    btn.addEventListener("click", showSummary);
+    document.getElementById("stopwatch").appendChild(btn);
   }
 
-  // Reset tracking clears all progress and localStorage
-  resetTrackingBtn.addEventListener('click', () => {
-    panels.forEach(panel => {
-      panel.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-      panel.querySelectorAll('.exercise-notes-container textarea').forEach(ta => ta.value = '');
-      const day = panel.id.replace('panel-', '');
-      localStorage.removeItem(`tracking-${day}`);
+  // Setup event listeners and initialize app state
+  function init(){
+    addNotesFields();
+    setupAutoAdvance();
+
+    createSummaryModal();
+
+    addSummaryButton();
+
+    activateTab(dayMap[getOttawaDayIndex()]);
+    loadProgress();
+
+    startStopBtn.addEventListener("click", toggleStopwatch);
+    resetBtn.addEventListener("click", resetStopwatch);
+
+    startRestBtn.addEventListener("click", startRest);
+    stopRestBtn.addEventListener("click", stopRest);
+    resetRestBtn.addEventListener("click", resetRest);
+
+    resetTrackingBtn.addEventListener("click", () => {
+      panels.forEach(panel => {
+        panel.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+        panel.querySelectorAll("textarea").forEach(ta => ta.value = "");
+        localStorage.removeItem(`tracking-${panel.id.replace("panel-", "")}`);
+      });
     });
-  });
 
-  // Initialization sequence
-  addExerciseNotes();
-  handleAutoAdvance();
-  createTimerPanel();
-  const workoutSummaryElements = createWorkoutSummaryModal();
-  addSummaryButton();
+    // Tab keyboard and click events
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener("click", () => {
+        activateTab(tab.id.replace("tab-",""));
+      });
+      tab.addEventListener("keydown", e => {
+        if(e.key === "ArrowRight"){
+          let nextIdx = (idx +1) % tabs.length;
+          tabs[nextIdx].focus();
+        } else if(e.key === "ArrowLeft"){
+          let prevIdx = (idx -1 + tabs.length) % tabs.length;
+          tabs[prevIdx].focus();
+        } else if(e.key === "Enter" || e.key === " "){
+          activateTab(tab.id.replace("tab-",""));
+        }
+      });
+    });
+  }
 
-  const currentDayIndex = getOttawaDayIndex();
-  const currentDayKey = dayMap[currentDayIndex];
-
-  activateTab(currentDayKey);
-  loadTrackingState();
-
-  startStopBtn.addEventListener('click', startStopwatch);
-  resetBtn.addEventListener('click', resetStopwatch);
+  init();
 });
