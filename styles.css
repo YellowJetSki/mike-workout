@@ -9,6 +9,8 @@
   --surface: #161b22;
   --text-primary: #cdd9e5;
   --text-secondary: #8b949e;
+  --danger: #ef4444;
+  --danger-dark: #b91c1c;
   --border-radius: 8px;
   --shadow-light: 0 1px 3px rgba(15,20,25,0.7);
   --shadow-strong: 0 3px 8px rgba(15,20,25,0.9);
@@ -87,10 +89,11 @@ h3 {
   gap: 1rem;
   width: 100%;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .button-row button {
-  flex: 1 1 120px;
+  flex: 1 1 140px;
   padding: 0.8rem 0;
   background: var(--primary);
   color: var(--surface);
@@ -110,7 +113,12 @@ h3 {
   outline: none;
 }
 
-/* Show Summary Button - consistent style */
+#editModeBtn[aria-pressed="true"] {
+  background: #223a66;
+  box-shadow: 0 0 0 2px var(--primary) inset;
+}
+
+/* Show Summary Button */
 #showSummaryBtn {
   margin-top: 1rem;
   background: var(--primary-light);
@@ -230,6 +238,7 @@ li {
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-primary);
+  position: relative;
 }
 
 li:hover,
@@ -238,11 +247,37 @@ li:focus-within {
 }
 
 li strong {
-  flex: 1 1 100%;
+  flex: 1 1 calc(100% - 44px);
   margin-bottom: 0.4rem;
   color: var(--primary);
   line-height: 1.4;
   letter-spacing: 0.012em;
+}
+
+/* Inline delete button (shown in edit mode) */
+.remove-exercise-btn {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 0;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.remove-exercise-btn:hover,
+.remove-exercise-btn:focus-visible {
+  background: var(--danger-dark);
+  outline: none;
+}
+
+.editing .remove-exercise-btn {
+  display: inline-block;
 }
 
 /* Checkbox */
@@ -490,6 +525,130 @@ textarea:focus {
   outline: none;
 }
 
+/* Add Workout Modal */
+#addWorkoutModal {
+  position: fixed;
+  inset: 0;
+  background-color: #121b26ee;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  padding: 1rem;
+  backdrop-filter: blur(6px) saturate(1.2);
+  -webkit-backdrop-filter: blur(6px) saturate(1.2);
+}
+
+#addWorkoutModal[aria-hidden="false"] {
+  display: flex;
+  animation: modalFadeInScale 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#addWorkoutModal .modal-content {
+  background: var(--surface);
+  border-radius: var(--border-radius);
+  width: 92%;
+  max-width: 520px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  box-shadow: 0 0 20px #5c9ef8aa;
+  color: var(--text-primary);
+  outline: none;
+  position: relative;
+}
+
+#addWorkoutModal h2 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+#addWorkoutForm .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+#addWorkoutForm .field span {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+#addWorkoutForm input[type="text"],
+#addWorkoutForm input[type="number"],
+#addWorkoutForm textarea {
+  width: 100%;
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #313846;
+  border-radius: 12px;
+  background-color: #1b222c;
+  color: var(--text-primary);
+}
+
+#addWorkoutForm textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+#cancelAddWorkout {
+  background: #2b3748;
+  color: var(--text-primary);
+  border: none;
+  border-radius: 24px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+}
+
+#confirmAddWorkout {
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  border-radius: 24px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#cancelAddWorkout:hover,
+#cancelAddWorkout:focus-visible {
+  background: #36475e;
+  outline: none;
+}
+
+#confirmAddWorkout:hover,
+#confirmAddWorkout:focus-visible {
+  background: var(--primary-dark);
+  outline: none;
+}
+
+.modal-close-x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close-x:hover,
+.modal-close-x:focus-visible {
+  color: var(--text-primary);
+  outline: none;
+}
+
 @keyframes modalFadeInScale {
   0% {opacity: 0; transform: scale(0.96);}
   100% {opacity: 1; transform: scale(1);}
@@ -518,12 +677,9 @@ textarea:focus {
     bottom: 80px;
     right: 16px;
   }
-
-  #workoutSummaryContent {
-    padding: 1.5rem 2rem 2rem;
-  }
 }
 
+/* Splash */
 #splash-screen {
   position: fixed;
   inset: 0;
@@ -545,7 +701,7 @@ textarea:focus {
 }
 
 #splash-screen h1 {
-  font-size: 2rem; /* smaller font size */
+  font-size: 2rem;
   margin: 0;
   text-align: center;
   width: 100%;
@@ -553,4 +709,7 @@ textarea:focus {
   font-weight: 700;
 }
 
-
+/* Utility to reveal per-item delete buttons when editing */
+main.editing li {
+  padding-right: 56px;
+}

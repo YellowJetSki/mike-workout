@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Muscle Growth Workout Tracker - Clean Modern Design</title>
-    <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-
 </head>
 <body>
   <div id="splash-screen" aria-hidden="true" role="presentation">
-  <h1>Welcome Mike</h1>
-</div>
+    <h1>Welcome Mike</h1>
+  </div>
+
   <div id="header-wrapper">
     <section id="stopwatch" role="region" aria-label="Stopwatch timer controls">
       <h2>Stopwatch</h2>
@@ -21,6 +21,10 @@
       <div class="button-row">
         <button id="startStopBtn" aria-pressed="false" aria-label="Start or stop stopwatch">Start</button>
         <button id="resetBtn" aria-label="Reset stopwatch">Reset</button>
+      </div>
+      <div class="button-row" style="margin-top:0.75rem;">
+        <button id="editModeBtn" aria-pressed="false" aria-label="Toggle edit mode">Edit</button>
+        <button id="addWorkoutBtn" aria-label="Add a workout">Add Workout</button>
       </div>
       <button id="showSummaryBtn" aria-label="Show workout summary" style="margin-top: 1rem;">
         Show Summary
@@ -54,7 +58,7 @@
 
   <main>
     <button id="resetTrackingBtn" aria-label="Reset workout tracking" title="Reset workout tracking">
-      <span class="material-icons">autorenew</span>
+      <span class="material-icons" aria-hidden="true">autorenew</span>
     </button>
 
     <section id="panel-monday" role="tabpanel" aria-labelledby="tab-monday" tabindex="0">
@@ -357,6 +361,32 @@
       <h2>Workout Summary</h2>
       <ul></ul>
       <button id="closeSummaryBtn" aria-label="Close summary">Close</button>
+    </div>
+  </div>
+
+  <!-- Add Workout Modal -->
+  <div id="addWorkoutModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="addWorkoutTitle" tabindex="-1">
+    <div class="modal-content" role="document">
+      <h2 id="addWorkoutTitle">Add Workout</h2>
+      <form id="addWorkoutForm">
+        <label class="field">
+          <span>Exercise name</span>
+          <input id="newExerciseName" name="name" type="text" required placeholder="e.g., KB Lateral Raise" />
+        </label>
+        <label class="field">
+          <span>Number of sets</span>
+          <input id="newExerciseSets" name="sets" type="number" min="1" max="10" step="1" value="3" required />
+        </label>
+        <label class="field">
+          <span>Description (optional)</span>
+          <textarea id="newExerciseDesc" name="desc" placeholder="Form cues, target reps, tempo, etc."></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="cancelAddWorkout">Cancel</button>
+          <button type="submit" id="confirmAddWorkout">Add</button>
+        </div>
+      </form>
+      <button class="modal-close-x" type="button" aria-label="Close add workout">×</button>
     </div>
   </div>
 

@@ -11,10 +11,7 @@ window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("service-worker.js")
       .then((registration) => {
-        console.log(
-          "Service Worker registered with scope:",
-          registration.scope
-        );
+        console.log("Service Worker registered with scope:", registration.scope);
       })
       .catch((error) => {
         console.error("Service Worker registration failed:", error);
@@ -42,6 +39,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeSummaryBtn = document.getElementById("closeSummaryBtn");
   const showSummaryBtn = document.getElementById("showSummaryBtn");
 
+  // New controls for editing/adding
+  const editModeBtn = document.getElementById("editModeBtn");
+  const addWorkoutBtn = document.getElementById("addWorkoutBtn");
+
+  // Add Workout Modal elements
+  const addWorkoutModal = document.getElementById("addWorkoutModal");
+  const addWorkoutForm = document.getElementById("addWorkoutForm");
+  const cancelAddWorkout = document.getElementById("cancelAddWorkout");
+  const confirmAddWorkout = document.getElementById("confirmAddWorkout");
+  const addModalCloseX = document.querySelector("#addWorkoutModal .modal-close-x");
+  const newExerciseName = document.getElementById("newExerciseName");
+  const newExerciseSets = document.getElementById("newExerciseSets");
+  const newExerciseDesc = document.getElementById("newExerciseDesc");
+
   let stopwatchInterval = null;
   let elapsedSeconds = 0;
   let running = false;
@@ -49,6 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let restTimerInterval = null;
   let restSecondsLeft = 0;
   let restRunning = false;
+
+  let editMode = false;
+  let lastFocusedBeforeModal = null;
 
   const dayMap = [
     "sunday",
@@ -71,6 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function activeDay() {
+    const selected = document.querySelector('#dayTabs [role="tab"][aria-selected="true"]');
+    return selected ? selected.id.replace("tab-", "") : "monday";
+  }
+
+  function activePanel() {
+    return document.getElementById(`panel-${activeDay()}`);
+  }
+
   function activateTab(day) {
     tabs.forEach((tab) => {
       const selected = tab.id === `tab-${day}`;
@@ -90,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateDayCompletionIndicators();
     updateProgressIndicators();
+    refreshEditAffordances();
   }
 
   function loadProgress() {
@@ -165,9 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
           updateProgressIndicators();
           updateDayCompletionIndicators();
           if (e.target.checked) {
-            const checkboxes = Array.from(
-              panel.querySelectorAll('input[type="checkbox"]')
-            );
+            const checkboxes = Array.from(panel.querySelectorAll('input[type="checkbox"]'));
             const idx = checkboxes.indexOf(e.target);
             if (idx !== -1 && idx + 1 < checkboxes.length) {
               checkboxes[idx + 1].focus();
@@ -182,9 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const h = Math.floor(sec / 3600);
     const m = Math.floor((sec % 3600) / 60);
     const s = sec % 60;
-    return `${h.toString().padStart(2, "0")}:${m
-      .toString()
-      .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   }
 
   function toggleStopwatch() {
@@ -274,10 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateRestTimer() {
     const mins = Math.floor(restSecondsLeft / 60);
     const secs = restSecondsLeft % 60;
-    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(
-      2,
-      "0"
-    )}:${String(secs).padStart(2, "0")}`;
+    timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   }
 
   closeSummaryBtn.addEventListener("click", () => {
@@ -288,10 +305,8 @@ document.addEventListener("DOMContentLoaded", () => {
   showSummaryBtn?.addEventListener("click", () => {
     const list = workoutSummaryList;
     list.innerHTML = "";
-    let totalSets = 0,
-      totalDone = 0;
-    let totalExercises = 0,
-      completedExercises = 0;
+    let totalSets = 0, totalDone = 0;
+    let totalExercises = 0, completedExercises = 0;
 
     panels.forEach((panel) => {
       const day = panel.id.replace("panel-", "");
@@ -313,9 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (dayDone === 0) return;
 
       const li = document.createElement("li");
-      li.textContent = `${
-        day.charAt(0).toUpperCase() + day.slice(1)
-      }: ${dayDone} of ${checkboxes.length} sets completed`;
+      li.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)}: ${dayDone} of ${checkboxes.length} sets completed`;
       list.appendChild(li);
     });
 
@@ -349,8 +362,215 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ---------- Edit Mode + Remove buttons ----------
+  function refreshEditAffordances() {
+    const panel = activePanel();
+    if (!panel) return;
+
+    // Add or remove delete buttons per exercise
+    panel.querySelectorAll("li").forEach((item) => {
+      let btn = item.querySelector(".remove-exercise-btn");
+      if (editMode) {
+        if (!btn) {
+          btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "remove-exercise-btn";
+          btn.setAttribute("aria-label", "Remove exercise");
+          btn.textContent = "Remove";
+          btn.addEventListener("click", () => {
+            if (confirm("Remove this exercise?")) {
+              const parentUl = item.closest("ul");
+              item.remove();
+              saveProgress(activeDay());
+              updateProgressIndicators();
+              updateDayCompletionIndicators();
+              // If list is empty, ensure UL exists for new insertions
+              if (parentUl && parentUl.children.length === 0) {
+                // no-op, UL remains
+              }
+            }
+          });
+          item.appendChild(btn);
+        }
+      } else {
+        if (btn) btn.remove();
+      }
+    });
+
+    document.querySelector("main").classList.toggle("editing", editMode);
+    editModeBtn.setAttribute("aria-pressed", String(editMode));
+    editModeBtn.textContent = editMode ? "Done" : "Edit";
+  }
+
+  editModeBtn.addEventListener("click", () => {
+    editMode = !editMode;
+    refreshEditAffordances();
+  });
+
+  // When switching tabs, ensure edit affordances refresh
+  tabs.forEach((t) => t.addEventListener("click", () => refreshEditAffordances()));
+
+  // ---------- Add Workout Modal ----------
+  function openAddModal() {
+    lastFocusedBeforeModal = document.activeElement;
+    addWorkoutModal.setAttribute("aria-hidden", "false");
+    addWorkoutModal.style.display = "flex";
+    // reset form
+    addWorkoutForm.reset();
+    newExerciseSets.value = 3;
+    // focus first field
+    newExerciseName.focus();
+    trapFocus(addWorkoutModal);
+  }
+
+  function closeAddModal() {
+    addWorkoutModal.setAttribute("aria-hidden", "true");
+    addWorkoutModal.style.display = "none";
+    releaseFocusTrap();
+    if (lastFocusedBeforeModal) lastFocusedBeforeModal.focus();
+  }
+
+  addWorkoutBtn.addEventListener("click", openAddModal);
+  cancelAddWorkout.addEventListener("click", closeAddModal);
+  addModalCloseX.addEventListener("click", closeAddModal);
+
+  addWorkoutModal.addEventListener("click", (e) => {
+    if (e.target === addWorkoutModal) {
+      closeAddModal();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && addWorkoutModal.getAttribute("aria-hidden") === "false") {
+      closeAddModal();
+    }
+  });
+
+  addWorkoutForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = newExerciseName.value.trim();
+    const sets = Math.max(1, Math.min(10, parseInt(newExerciseSets.value, 10) || 1));
+    const desc = newExerciseDesc.value.trim();
+
+    if (!name) {
+      newExerciseName.focus();
+      return;
+    }
+
+    const panel = activePanel();
+    if (!panel) return;
+
+    let ul = panel.querySelector("ul");
+    if (!ul) {
+      ul = document.createElement("ul");
+      panel.appendChild(ul);
+    }
+
+    const li = document.createElement("li");
+
+    // Title
+    const title = document.createElement("strong");
+    title.textContent = name;
+    li.appendChild(title);
+
+    // Sets (checkboxes)
+    for (let i = 1; i <= sets; i++) {
+      const label = document.createElement("label");
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(` Set ${i}`));
+      li.appendChild(label);
+    }
+
+    // Description
+    const descDiv = document.createElement("div");
+    descDiv.className = "exercise-description";
+    descDiv.textContent = desc || "";
+    li.appendChild(descDiv);
+
+    // Notes
+    const notesWrap = document.createElement("div");
+    notesWrap.className = "exercise-notes-container";
+    const ta = document.createElement("textarea");
+    ta.placeholder = "Add notes (weight, form, etc.)";
+    notesWrap.appendChild(ta);
+    li.appendChild(notesWrap);
+
+    ul.appendChild(li);
+
+    // If currently in edit mode, ensure remove button appears
+    if (editMode) {
+      refreshEditAffordances();
+    }
+
+    // Persist and refresh indicators
+    saveProgress(activeDay());
+    updateProgressIndicators();
+    updateDayCompletionIndicators();
+
+    closeAddModal();
+  });
+
+  // ---------- Focus Trap Utilities for Modal ----------
+  let focusTrapCleanup = null;
+
+  function trapFocus(container) {
+    const FOCUSABLE = [
+      "a[href]",
+      "area[href]",
+      'input:not([disabled]):not([type="hidden"])',
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "button:not([disabled])",
+      "iframe",
+      "object",
+      "embed",
+      '[contenteditable="true"]',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
+
+    function getFocusable() {
+      return Array.from(container.querySelectorAll(FOCUSABLE)).filter(
+        (el) => el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement
+      );
+    }
+
+    function onKeydown(e) {
+      if (e.key !== "Tab") return;
+      const focusables = getFocusable();
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", onKeydown);
+    focusTrapCleanup = () => document.removeEventListener("keydown", onKeydown);
+  }
+
+  function releaseFocusTrap() {
+    if (focusTrapCleanup) {
+      focusTrapCleanup();
+      focusTrapCleanup = null;
+    }
+  }
+
+  // ---------- Initialize ----------
   setUpTabs();
   setupAutoAdvance();
   activateTab(dayMap[getOttawaDayIndex()]);
   loadProgress();
+  updateProgressIndicators();
+  refreshEditAffordances();
 });
