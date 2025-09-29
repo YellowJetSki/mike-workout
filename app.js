@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const startStopBtn = document.getElementById("startStopBtn");
   const resetBtn = document.getElementById("resetBtn");
 
-  const timerPanel = document.getElementById("timerPanel");
   const timerDisplayRest = document.getElementById("timerDisplay");
   const startRestBtn = document.getElementById("startRestBtn");
   const stopRestBtn = document.getElementById("stopRestBtn");
@@ -39,15 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeSummaryBtn = document.getElementById("closeSummaryBtn");
   const showSummaryBtn = document.getElementById("showSummaryBtn");
 
-  // New controls for editing/adding
   const editModeBtn = document.getElementById("editModeBtn");
   const addWorkoutBtn = document.getElementById("addWorkoutBtn");
 
-  // Add Workout Modal elements
   const addWorkoutModal = document.getElementById("addWorkoutModal");
   const addWorkoutForm = document.getElementById("addWorkoutForm");
   const cancelAddWorkout = document.getElementById("cancelAddWorkout");
-  const confirmAddWorkout = document.getElementById("confirmAddWorkout");
   const addModalCloseX = document.querySelector("#addWorkoutModal .modal-close-x");
   const newExerciseName = document.getElementById("newExerciseName");
   const newExerciseSets = document.getElementById("newExerciseSets");
@@ -63,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let editMode = false;
   let lastFocusedBeforeModal = null;
+  let focusTrapCleanup = null;
 
   const dayMap = [
     "sunday",
@@ -248,7 +245,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDayCompletionIndicators();
   });
 
-  startRestBtn.addEventListener("click", () => {
+  // Rest timer
+  startRestBtn?.addEventListener("click", () => {
     if (!restRunning) {
       restSecondsLeft = 60;
       updateRestTimer();
@@ -271,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  stopRestBtn.addEventListener("click", () => {
+  stopRestBtn?.addEventListener("click", () => {
     if (restRunning) {
       clearInterval(restTimerInterval);
       restRunning = false;
@@ -281,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  resetRestBtn.addEventListener("click", () => {
+  resetRestBtn?.addEventListener("click", () => {
     clearInterval(restTimerInterval);
     restSecondsLeft = 0;
     updateRestTimer();
@@ -297,6 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
     timerDisplayRest.textContent = `Rest: ${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   }
 
+  // Summary
   closeSummaryBtn.addEventListener("click", () => {
     workoutSummaryModal.style.display = "none";
     workoutSummaryModal.setAttribute("aria-hidden", "true");
@@ -367,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const panel = activePanel();
     if (!panel) return;
 
-    // Add or remove delete buttons per exercise
+    // Ensure all existing items reflect edit mode
     panel.querySelectorAll("li").forEach((item) => {
       let btn = item.querySelector(".remove-exercise-btn");
       if (editMode) {
@@ -379,15 +378,10 @@ document.addEventListener("DOMContentLoaded", () => {
           btn.textContent = "Remove";
           btn.addEventListener("click", () => {
             if (confirm("Remove this exercise?")) {
-              const parentUl = item.closest("ul");
               item.remove();
               saveProgress(activeDay());
               updateProgressIndicators();
               updateDayCompletionIndicators();
-              // If list is empty, ensure UL exists for new insertions
-              if (parentUl && parentUl.children.length === 0) {
-                // no-op, UL remains
-              }
             }
           });
           item.appendChild(btn);
@@ -407,7 +401,6 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshEditAffordances();
   });
 
-  // When switching tabs, ensure edit affordances refresh
   tabs.forEach((t) => t.addEventListener("click", () => refreshEditAffordances()));
 
   // ---------- Add Workout Modal ----------
@@ -415,10 +408,8 @@ document.addEventListener("DOMContentLoaded", () => {
     lastFocusedBeforeModal = document.activeElement;
     addWorkoutModal.setAttribute("aria-hidden", "false");
     addWorkoutModal.style.display = "flex";
-    // reset form
     addWorkoutForm.reset();
     newExerciseSets.value = 3;
-    // focus first field
     newExerciseName.focus();
     trapFocus(addWorkoutModal);
   }
@@ -486,7 +477,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Description
     const descDiv = document.createElement("div");
     descDiv.className = "exercise-description";
-    descDiv.textContent = desc || "";
+    if (desc) descDiv.textContent = desc;
+    else descDiv.textContent = "";
     li.appendChild(descDiv);
 
     // Notes
@@ -497,14 +489,31 @@ document.addEventListener("DOMContentLoaded", () => {
     notesWrap.appendChild(ta);
     li.appendChild(notesWrap);
 
+    // Append to list
     ul.appendChild(li);
 
-    // If currently in edit mode, ensure remove button appears
+    // If in edit mode, attach remove button
     if (editMode) {
-      refreshEditAffordances();
+      let btn = li.querySelector(".remove-exercise-btn");
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "remove-exercise-btn";
+        btn.setAttribute("aria-label", "Remove exercise");
+        btn.textContent = "Remove";
+        btn.addEventListener("click", () => {
+          if (confirm("Remove this exercise?")) {
+            li.remove();
+            saveProgress(activeDay());
+            updateProgressIndicators();
+            updateDayCompletionIndicators();
+          }
+        });
+        li.appendChild(btn);
+      }
     }
 
-    // Persist and refresh indicators
+    // Persist checkboxes/notes snapshot
     saveProgress(activeDay());
     updateProgressIndicators();
     updateDayCompletionIndicators();
@@ -512,27 +521,21 @@ document.addEventListener("DOMContentLoaded", () => {
     closeAddModal();
   });
 
-  // ---------- Focus Trap Utilities for Modal ----------
-  let focusTrapCleanup = null;
-
+  // ---------- Focus Trap ----------
   function trapFocus(container) {
-    const FOCUSABLE = [
+    const selector = [
       "a[href]",
       "area[href]",
       'input:not([disabled]):not([type="hidden"])',
       "select:not([disabled])",
       "textarea:not([disabled])",
       "button:not([disabled])",
-      "iframe",
-      "object",
-      "embed",
-      '[contenteditable="true"]',
-      '[tabindex]:not([tabindex="-1"])',
+      "[tabindex]:not([tabindex='-1'])",
     ].join(",");
 
     function getFocusable() {
-      return Array.from(container.querySelectorAll(FOCUSABLE)).filter(
-        (el) => el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement
+      return Array.from(container.querySelectorAll(selector)).filter(
+        (el) => el.offsetParent !== null || el === document.activeElement
       );
     }
 
@@ -566,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ---------- Initialize ----------
+  // ---------- Init ----------
   setUpTabs();
   setupAutoAdvance();
   activateTab(dayMap[getOttawaDayIndex()]);
